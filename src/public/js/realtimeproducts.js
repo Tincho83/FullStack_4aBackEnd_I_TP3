@@ -33,7 +33,7 @@ btnSubmit.addEventListener("click", async (e) => {
         }
 
         try {
-            const response = await fetch(`/api/products`, {
+            const response = await fetch(`/api/products/todos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -59,8 +59,9 @@ btnSubmit.addEventListener("click", async (e) => {
 });
 
 
-function ModifyProduct(id, title, description, code, price, stock, category) {
+function ModifyProduct(_id, title, description, code, price, stock, category) {
 
+    console.log(_id, title, description, code, price, stock, category);
     addstatus = false;
 
     window.scrollTo({
@@ -68,7 +69,7 @@ function ModifyProduct(id, title, description, code, price, stock, category) {
         behavior: 'smooth'
     });
 
-    document.getElementById('productId').value = id;
+    document.getElementById('productId').value = _id;
     document.getElementById('title').value = title;
     document.getElementById('description').value = description;
     document.getElementById('code').value = code;
@@ -85,7 +86,7 @@ function ModifyProduct(id, title, description, code, price, stock, category) {
 
             event.preventDefault();
             const updatedProductId = {
-                id: parseInt(document.getElementById('productId').value, 10)
+                //id: parseInt(document.getElementById('productId').value, 10)                
             };
             const updatedProduct = {
                 title: document.getElementById('title').value,
@@ -96,7 +97,7 @@ function ModifyProduct(id, title, description, code, price, stock, category) {
                 category: document.getElementById('category').value
             };
 
-            fetch(`/api/products/${updatedProductId.id}`, {
+            fetch(`/api/products/todos/${_id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,18 +105,18 @@ function ModifyProduct(id, title, description, code, price, stock, category) {
                 body: JSON.stringify(updatedProduct)
             })
                 .then(response => response.json())
-                .then(data => {                    
+                .then(data => {
                     if (data.success) {
                         alert('Producto actualizado exitosamente.');
-                        document.getElementById('btnSubmit').value = "Add Product";                        
+                        document.getElementById('btnSubmit').value = "Add Product";
                     } else {
                         console.log("Error: ", data);
-                        alert('Error al actualizar el producto');
+                        alert(`Error al actualizar el producto ${_id}`);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error al actualizar el producto');
+                    alert(`Error al actualizar el producto ${_id}`);
                 });
 
             document.getElementById('productId').value = "";
@@ -132,7 +133,7 @@ function ModifyProduct(id, title, description, code, price, stock, category) {
 
 function DeleteProduct(productId) {
     if (confirm(`Deseas borrar el producto id ${productId}?`)) {
-        fetch(`/api/products/${productId}`, {
+        fetch(`/api/products/todos/${productId}`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -157,6 +158,7 @@ socket.on("HoraServidor", datosrecib => {
 });
 
 socket.on("nuevoProducto", nuevoProd => {
+    console.log("RT JS escucha:", nuevoProd)
     agregarProductoAlDOM(nuevoProd);
 });
 
@@ -173,12 +175,17 @@ function agregarProductoAlDOM(product) {
     //newItem.style.display = 'flex';
     //newItem.style.justifyContent = 'center';
     //newItem.style.alignItems = 'center';
-    newItem.dataset.id = product.id;
+    newItem.dataset.id = product._id;
+
+    console.log("RT JS addtoDOM:", product)
 
     let disp = product.status ? "Si" : "No";
 
     let img = "";
     let alt = "";
+    let pid = product._id;
+    console.log("_id es: ", pid);
+
     if (product.thumbnails > 0) {
         alt = product.title;
         img = product.th.urlmain;
@@ -202,8 +209,8 @@ function agregarProductoAlDOM(product) {
                 </div>
             </div>
             <div class="ItemCardFooter">
-                <button onclick="DeleteProduct(${product.id})" id="btnDelete">Delete Product</button>
-                <button onclick="ModifyProduct(${product.id}, '${product.title}', '${product.description}', '${product.code}', ${product.price}, ${product.stock}, '${product.category}')" id="btnModify">Modify Product</button>
+                <button onclick="DeleteProduct('${pid}')" id="btnDelete">Delete Product</button>
+                <button onclick="ModifyProduct('${pid}', '${product.title}', '${product.description}', '${product.code}', ${product.price}, ${product.stock}, '${product.category}')" id="btnModify">Modify Product</button>
             </div>        
         </div>
     `;
@@ -218,7 +225,7 @@ socket.on("ProductoActualizado", Prodactuald => {
 });
 
 function actualizarProductoEnDOM(product) {
-    const productElement = document.querySelector(`[data-id="${product.id}"]`);
+    const productElement = document.querySelector(`[data-id="${product._id}"]`);
 
     if (productElement) {
         //console.log("Producto encontrado en DOM, actualizando...");
@@ -228,7 +235,7 @@ function actualizarProductoEnDOM(product) {
 
         const btnModify = productElement.querySelector('#btnModify');
         if (btnModify) {
-            btnModify.setAttribute('onclick', `ModifyProduct(${product.id}, '${product.title}', '${product.description}', '${product.code}', ${product.price}, ${product.stock}, '${product.category}')`);
+            btnModify.setAttribute('onclick', `ModifyProduct('${product._id}', '${product.title}', '${product.description}', '${product.code}', ${product.price}, ${product.stock}, '${product.category}')`);
         }
     } else {
         //console.log("Producto no encontrado en el DOM");

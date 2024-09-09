@@ -1,11 +1,11 @@
 const { mongoose } = require("mongoose");
 const { config } = require("../../config/config");
 
-const productsColl = config.MONGO_COLLNAME;
+const productsColl = config.MONGO_COLLPRODNAME;
 
 const productsSchema = new mongoose.Schema(
     {
-        id: { type: Number, required: true, unique: true },
+        //id: { type: Number, required: true, unique: true },
         title: { type: String, required: true },
         description: { type: String, required: true },
         code: { type: String, required: true, unique: true },
@@ -18,6 +18,7 @@ const productsSchema = new mongoose.Schema(
     {
         timestamps: true,
         strict: false,
+        //collection: config.MONGO_COLLPRODNAME,
     }
 )
 
@@ -27,5 +28,4 @@ const ProductsModel = mongoose.model(
 )
 
 module.exports = { ProductsModel };
-
 

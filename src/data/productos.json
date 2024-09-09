@@ -471,5 +471,38 @@
           "stock": 3,
           "category": "Infusion",
           "thumbnails": []
+     },
+     {
+          "id": 36,
+          "title": "Limon La Virginia",
+          "description": "Te de Limon en 5 minutos",
+          "code": "TEVI003",
+          "price": 1100,
+          "status": true,
+          "stock": 3,
+          "category": "Infusion",
+          "thumbnails": []
+     },
+     {
+          "id": 37,
+          "title": "T",
+          "description": "T",
+          "code": "TT",
+          "price": 7,
+          "status": true,
+          "stock": 3,
+          "category": "Inf",
+          "thumbnails": []
+     },
+     {
+          "id": 38,
+          "title": "Te",
+          "description": "Te t",
+          "code": "TEVI004",
+          "price": 7,
+          "status": true,
+          "stock": 3,
+          "category": "Infusion",
+          "thumbnails": []
      }
 ]

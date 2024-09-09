@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { isValidObjectId } = require("mongoose");
-const ProductsManagerMongoDB = require("../dao/mongodb/ProductsManagerMongoDB.js");
-const ProductsManager = require("../dao/ProductsManager.js");
+const ProductsManagerMongoDB = require("../dao/db/ProductsManagerMongoDB.js");
+const ProductsManager = require("../dao/filesystem/ProductsManager.js");
 
 const router = Router();
 
@@ -11,6 +11,69 @@ router.get("/", (req, res) => {
     res.setHeader('Content-type', 'text/html');
     res.status(200).render("home", { titulo });
 });
+
+// Para DB
+router.get('/productsdb', async (req, res) => {
+
+    let { detalle } = req.query;
+    if (detalle) {
+        console.log(detalle);
+    }
+
+    let titulo = "Listado de Productos";
+    let prodss;
+
+    try {
+        prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+    } catch (error) {
+        console.log(error);
+        res.setHeader('Content-type', 'application/json');
+        return res.status(500).json({
+            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
+            detalle: `${error.message}`
+        });
+    }
+
+
+    res.setHeader('Content-type', 'text/html');
+    res.status(200).render("index", {
+        detalle,
+        titulo,
+        prodss
+    });
+})
+
+
+router.get('/realtimeproductsdb', async (req, res) => {
+
+    let { detalle } = req.query;
+    if (detalle) {
+        console.log(detalle);
+    }
+
+    let titulo = "Listado de Productos en tiempo Real";
+    let prodss;
+
+    try {
+        prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+        console.log(prodss);
+    } catch (error) {
+        console.log(error);
+        res.setHeader('Content-type', 'application/json');
+        return res.status(500).json({
+            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
+            detalle: `${error.message}`
+        });
+    }
+
+    res.setHeader('Content-type', 'text/html');
+    res.status(200).render("realTimeProducts", {
+        titulo,
+        prodss
+    });
+});
+
+// Fin DB
 
 router.get('/products', async (req, res) => {
 

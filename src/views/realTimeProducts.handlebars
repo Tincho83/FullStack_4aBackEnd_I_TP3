@@ -5,7 +5,7 @@
     <div id="product-list">
 
         {{#each prodss}}
-        <div class="divCardItem" data-id="{{id}}">
+        <div class="divCardItem" data-id="{{_id}}">
             <div class="CardItem">
                 <div class="diviCartItem">
                     {{#if status}}
@@ -34,9 +34,9 @@
                     </div>
                 </div>
                 <div class="ItemCardFooter">
-                    <button onclick="DeleteProduct({{id}})" id="btnDelete">Delete Product</button>
+                    <button onclick="DeleteProduct('{{_id}}')" id="btnDelete">Delete Product</button>
                     <button
-                        onclick="ModifyProduct({{id}}, '{{title}}', '{{description}}', '{{code}}', {{price}}, {{stock}}, '{{category}}')"
+                        onclick="ModifyProduct('{{_id}}', '{{title}}', '{{description}}', '{{code}}', {{price}}, {{stock}}, '{{category}}')"
                         id="btnModify">Modify Product</button>
                 </div>
             </div>
