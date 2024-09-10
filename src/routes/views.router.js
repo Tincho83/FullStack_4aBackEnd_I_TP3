@@ -13,6 +13,42 @@ router.get("/", (req, res) => {
 });
 
 // Para DB
+router.get('/cartsdb/:cid', async (req, res) => {
+
+    let { detalle } = req.query;
+    if (detalle) {
+        console.log(detalle);
+    }
+
+    let titulo = "Listado de Productos del Carrito";
+    let prodss;
+
+    let { page } = req.query;
+    if (!page || isNaN(Number(page))) {
+        page = 1;
+    }
+
+    try {
+        //prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+        prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page);
+    } catch (error) {
+        console.log(error);
+        res.setHeader('Content-type', 'application/json');
+        return res.status(500).json({
+            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
+            detalle: `${error.message}`
+        });
+    }
+
+
+    res.setHeader('Content-type', 'text/html');
+    res.status(200).render("carts", {
+        detalle,
+        titulo,
+        prodss
+    });
+})
+
 router.get('/productsdb', async (req, res) => {
 
     let { detalle } = req.query;
