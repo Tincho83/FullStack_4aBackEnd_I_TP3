@@ -1,5 +1,6 @@
 const { mongoose } = require("mongoose");
 const { config } = require("../../config/config");
+const  paginate = require("mongoose-paginate-v2");
 
 const productsColl = config.MONGO_COLLPRODNAME;
 
@@ -19,12 +20,14 @@ const productsSchema = new mongoose.Schema(
         timestamps: true,
         strict: false,
         //collection: config.MONGO_COLLPRODNAME,
-    }
+    }    
 )
+
+productsSchema.plugin(paginate);
 
 const ProductsModel = mongoose.model(
     productsColl,
-    productsSchema
+    productsSchema,
 )
 
 module.exports = { ProductsModel };

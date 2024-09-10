@@ -113,7 +113,7 @@ body {
 
 .cabecera_Enlaces_img_p {
     margin: 10;
-    color:rgb(170, 190, 190);
+    color: rgb(170, 190, 190);
 }
 
 #hhmm {
@@ -183,7 +183,12 @@ body {
     /* Cambia el color al pasar el ratón */
 }
 
-#title, #description, #code, #price, #stock, #category {
+#title,
+#description,
+#code,
+#price,
+#stock,
+#category {
     font-size: 1.25rem;
     padding: 10px;
     width: 100%;
@@ -196,7 +201,7 @@ label {
     margin-bottom: 8px;
 }
 
-#btnSubmit{
+#btnSubmit {
     font-size: 1.5rem;
     padding: 12px;
     background-color: #007BFF;
@@ -217,4 +222,31 @@ label {
 hr {
     margin-top: 0px;
     margin-bottom: 0px;
+}
+
+.paginate {
+    display: flex;
+    justify-content: center;
+    /* Centra horizontalmente los elementos */
+    margin-top: 20px;
+    /* Espacio superior opcional */
+
+    align-items: center;
+
+
+}
+
+.paginate a {
+    margin: 0 5px;
+    /* Espacio entre los enlaces */
+    text-decoration: none;
+    /* Elimina el subrayado */
+    color: #007bff;
+    /* Color del texto */
+    font-size: x-large;
+}
+
+.paginate a:hover {
+    text-decoration: underline;
+    /* Subrayado al pasar el ratón sobre el enlace */
 }

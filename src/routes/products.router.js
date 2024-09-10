@@ -10,7 +10,48 @@ ProductsManager.path = "./src/data/productos.json";
 
 // Inicio DB
 router.get('/todos', async (req, res) => {
-    console.log("entro get");
+    console.log("\r\nentro get");
+
+    let { page, limit, sort, query } = req.query;
+
+    if (!page || isNaN(Number(page))) {
+        page = 1;
+    }
+    console.log(`pagina: ${page}`);
+
+
+    if (!limit || isNaN(Number(limit))) {
+        limit = 10;
+    }
+    console.log(`limite: ${limit}`);
+
+   
+        console.log(`orden: ${sort}`);
+
+
+
+    // Filtro de búsqueda    //&query=category:infusion
+    let filter = {};
+    if (query) {
+        let queryparm = query.split(":");
+        filter[queryparm[0]] = queryparm[1];
+        console.log(`consulta: ${query}`);
+     }
+
+     sort = "price: -1"
+    console.log(`Filtro:\r\n ${JSON.stringify(filter, null, 5)}`);
+
+
+
+
+
+
+    console.log(`pagina: ${page}`);
+    console.log(`limite: ${limit}`);
+    console.log(`orden: ${sort}`);
+    console.log(`consulta: ${query}`);
+    console.log(`Filtro:\r\n ${JSON.stringify(filter, null, 5)}`);
+
     /*
     try {
         let products = await ProductsModel.find();
@@ -21,8 +62,10 @@ router.get('/todos', async (req, res) => {
     }
     */
     try {
-        let products = await ProductsManagerMongoDB.getProductsDBMongo();
-        console.log(`Se encontraron ${products.length} productos.`);
+        //let products = await ProductsManagerMongoDB.getProductsDBMongo();
+        let products = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page, limit);
+        //console.log(`Products: ${JSON.stringify(products.docs, null, 5)}`);
+        //console.log(`Se encontraron ${products.docs.length} productos.`);
         res.setHeader('Content-type', 'application/json');
         return res.status(200).json({ products })
     } catch (error) {
@@ -85,6 +128,7 @@ router.post('/todos', async (req, res) => {
     try {
         let existe = await ProductsManagerMongoDB.getProductsByDBMongo({ code })
         if (existe) {
+            console.log(`Producto ${code} existente en DB.`);
             res.setHeader('Content-type', 'application/json');
             return res.status(400).json({ error: `Producto ${code} existente en DB.` })
         }

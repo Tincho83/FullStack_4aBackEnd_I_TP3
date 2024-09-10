@@ -4,7 +4,7 @@
 <div style="display: flex;">
     <div id="product-list">
 
-        {{#each prodss}}
+        {{#each products}}
         <div class="divCardItem" data-id="{{_id}}">
             <div class="CardItem">
                 <div class="diviCartItem">
@@ -43,7 +43,22 @@
         </div>
         {{/each}}
     </div>
+    <div class="paginate" id="paginate">
+        {{#if dataObjectPaginate.hasPrevPage}}
+        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.prevPage}}" class="pagPrev">{{dataObjectPaginate.prevPage}}</a>
+        {{else}}
+        {{/if}}
 
+        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.currentPage}}" class="pagCurrent">{{dataObjectPaginate.currentPage}}</a>
+
+        {{#if dataObjectPaginate.hasNextPage}}
+        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.nextPage}}" class="pagNext">{{dataObjectPaginate.nextPage}}</a>
+        {{else}}
+        {{/if}}
+
+        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.totalPages}}" class="pagLast" >{{dataObjectPaginate.totalPages}}</a>
+
+    </div>
     <hr>
 
     <div class="divFormProd">

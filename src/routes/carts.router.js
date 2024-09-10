@@ -1,9 +1,10 @@
 const { Router } = require("express");
 const { isValidObjectId } = require("mongoose");
+const CartsManager = require("../dao/filesystem/CartsManager.js");
 const CartsManagerMongoDB = require("../dao/db/CartsManagerMongoDB.js");
 const ProductsManagerMongoDB = require("../dao/db/ProductsManagerMongoDB.js");
-const CartsManager = require("../dao/filesystem/CartsManager.js");
 const ProductsManager = require("../dao/filesystem/ProductsManager.js");
+const { CartsModel } = require("../dao/models/CartsModel.js");
 
 const router = Router();
 

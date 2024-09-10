@@ -23,8 +23,14 @@ router.get('/productsdb', async (req, res) => {
     let titulo = "Listado de Productos";
     let prodss;
 
+    let { page } = req.query;
+    if (!page || isNaN(Number(page))) {
+        page = 1;
+    }
+
     try {
-        prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+        //prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+        prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page);
     } catch (error) {
         console.log(error);
         res.setHeader('Content-type', 'application/json');
@@ -45,18 +51,47 @@ router.get('/productsdb', async (req, res) => {
 
 
 router.get('/realtimeproductsdb', async (req, res) => {
+    console.log("\r\nentro get");
 
     let { detalle } = req.query;
     if (detalle) {
         console.log(detalle);
     }
 
+    let { page, limit, sort, query } = req.query;
+    if (!page || isNaN(Number(page))) {
+        page = 1;
+    }
+
     let titulo = "Listado de Productos en tiempo Real";
     let prodss;
+    let dataObjectPaginate = {};
+
+    sort = { category: -1 };
 
     try {
-        prodss = await ProductsManagerMongoDB.getProductsDBMongo();
-        console.log(prodss);
+        console.log(`Paginas ${page}`);
+        //prodss = await ProductsManagerMongoDB.getProductsDBMongo();
+        prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page, limit, sort);
+        console.log(`Products: ${JSON.stringify(prodss.docs, null, 5)}`);
+        console.log(`Se eencontraron ${prodss.docs.length} productos.`);
+        console.log("::", prodss);
+
+
+
+        dataObjectPaginate = {
+            //titulo,
+            //products: prodss.docs,          // Lista de productos
+            totalPages: prodss.totalPages,   // Total de páginas
+            currentPage: prodss.page,        // Página actual
+            hasPrevPage: prodss.hasPrevPage, // ¿Tiene página anterior?
+            hasNextPage: prodss.hasNextPage, // ¿Tiene siguiente página?
+            prevPage: prodss.prevPage,       // Página anterior
+            nextPage: prodss.nextPage,        // Siguiente página
+        };
+
+        console.log("Datos para la vista:", dataObjectPaginate);
+
     } catch (error) {
         console.log(error);
         res.setHeader('Content-type', 'application/json');
@@ -69,7 +104,8 @@ router.get('/realtimeproductsdb', async (req, res) => {
     res.setHeader('Content-type', 'text/html');
     res.status(200).render("realTimeProducts", {
         titulo,
-        prodss
+        products: prodss.docs,
+        dataObjectPaginate
     });
 });
 

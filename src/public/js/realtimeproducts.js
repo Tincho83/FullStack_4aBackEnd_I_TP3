@@ -12,6 +12,139 @@ const inputCateg = document.getElementById("category");
 const btnSubmit = document.getElementById("btnSubmit");
 const productListDiv = document.getElementById("product-list");
 
+const getProducts = async () => {
+
+    let res = await fetch(`/api/products/todos`);
+    //let res = await fetch(`/realtimeproductsdb`);
+    let data = await res.json();
+    console.log("\r\nentro realtimeproducts.js");
+    console.log(`Se hencontraron ${data.products.docs.length} productos.`);
+    console.log(data);
+
+
+    console.log(data.products.totalPages);
+
+    let otpg = Number(data.products.totalPages);
+    console.log(otpg);
+
+    const paginateDiv = document.getElementById('paginate');
+
+    if (!data.products.hasPrevPage) {
+        const FirstPage = document.createElement("a");
+        FirstPage.textContent = `[1] `;
+        FirstPage.className = "paginacionfirst";
+        FirstPage.href = `/api/products/todos?page=1`;
+        paginateDiv.appendChild(FirstPage);
+
+        if (data.products.nextPage) {
+            const NextPage = document.createElement("a");
+            NextPage.textContent = `[${data.products.nextPage}] `;
+            NextPage.className = "paginacion";
+            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            paginateDiv.appendChild(NextPage);
+        } else {
+
+        }
+
+        if (data.products.totalPages) {
+            const LastPage = document.createElement("a");
+            LastPage.textContent = `[${data.products.totalPages}] `;
+            LastPage.className = "paginacion";
+            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            paginateDiv.appendChild(LastPage);
+        }
+
+    } else {
+
+        let prevpg = Number(data.products.totalPages) - 1;
+        const PrevPage = document.createElement("a");
+        PrevPage.textContent = `[${prevpg}] `;
+        PrevPage.className = "paginacionprev";
+        PrevPage.href = `/api/products/todos?page=1`;
+        paginateDiv.appendChild(PrevPage);
+    }
+
+
+
+
+
+
+
+    if (!data.products.hasPrevPage) {
+        if (otpg < 4) {
+            const FirstPage = document.createElement("a");
+            FirstPage.textContent = ` [1] `;
+            FirstPage.className = "paginacion";
+            FirstPage.href = `/api/products/todos?page=1`;
+            document.body.append(FirstPage);
+
+            const NextPage = document.createElement("a");
+            NextPage.textContent = ` [${data.products.nextPage}] `;
+            NextPage.className = "paginacion";
+            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            document.body.append(NextPage);
+
+            const LastPage = document.createElement("a");
+            LastPage.textContent = ` [${data.products.totalPages}] `;
+            LastPage.className = "paginacion";
+            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            document.body.append(LastPage);
+        }
+        else {
+            const FirstPage = document.createElement("a");
+            FirstPage.textContent = ` [1] `;
+            FirstPage.className = "paginacion";
+            FirstPage.href = `/api/products/todos?page=1`;
+            document.body.append(FirstPage);
+
+            const NextPage = document.createElement("a");
+            NextPage.textContent = ` [${data.products.nextPage}] `;
+            NextPage.className = "paginacion";
+            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            document.body.append(NextPage);
+
+            otpg = Number(data.products.nextPage) + 1;
+            console.log(otpg);
+
+            const OtNextPage = document.createElement("a");
+            OtNextPage.textContent = ` [${otpg}] `;
+            OtNextPage.className = "paginacion";
+            OtNextPage.href = `/api/products/todos?page=${otpg}`;
+            document.body.append(OtNextPage);
+
+            const LastPage = document.createElement("a");
+            LastPage.textContent = ` [${data.products.totalPages}] `;
+            LastPage.className = "paginacion";
+            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            document.body.append(LastPage);
+        }
+    } else {
+        const FirstPage = document.createElement("a");
+        FirstPage.textContent = ` [1] `;
+        FirstPage.className = "paginacion";
+        FirstPage.href = `/api/products/todos?page=1`;
+        document.body.append(FirstPage);
+
+        const NextPage = document.createElement("a");
+        NextPage.textContent = ` [${data.products.nextPage}] `;
+        NextPage.className = "paginacion";
+        NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+        document.body.append(NextPage);
+
+        const LastPage = document.createElement("a");
+        LastPage.textContent = ` [${data.products.totalPages}] `;
+        LastPage.className = "paginacion";
+        LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+        document.body.append(LastPage);
+    }
+
+
+
+
+}
+
+//getProducts();
+
 btnSubmit.addEventListener("click", async (e) => {
     e.preventDefault();
 
@@ -32,6 +165,13 @@ btnSubmit.addEventListener("click", async (e) => {
             return;
         }
 
+        if (isNaN(product.price) || isNaN(product.stock)) {
+            alert('Los campos precio y stock deben ser numericos.');
+            return;
+        }
+
+
+
         try {
             const response = await fetch(`/api/products/todos`, {
                 method: 'POST',
@@ -40,16 +180,34 @@ btnSubmit.addEventListener("click", async (e) => {
                 },
                 body: JSON.stringify(product)
             })
-                .then(response => {
-                    response.json()
-                })
-                .then(data => {
-                    alert('Producto agregado correctamente.');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Ocurrio un error al intentar agregar un producto.');
-                });
+                /*
+                    .then(response => {
+                        response.json()
+                    })
+                    .then(data => {
+                        alert('Producto agregado correctamente.');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ocurrio un error al intentar agregar un producto.');
+                    })
+                    */
+                ;
+
+
+
+            const data = await response.json();
+
+            console.log(data);
+
+            if (response.ok) {
+                alert('Producto agregado correctamente.');
+            } else {
+                alert(`Error: ${data.error}`);
+            }
+
+
+
         } catch (error) {
             console.error('Error:', error);
             alert('Un error occurrio al intentar agregar el producto.');
@@ -96,6 +254,20 @@ function ModifyProduct(_id, title, description, code, price, stock, category) {
                 stock: parseInt(document.getElementById('stock').value, 10),
                 category: document.getElementById('category').value
             };
+
+            console.log(price);
+            console.log(stock);
+
+            if (isNaN(updatedProduct.price) || isNaN(updatedProduct.stock) || typeof updatedProduct.price == null || typeof updatedProduct.stock == null) {
+                alert('Los campos precio y stock deben ser numericos.');
+                return;
+            }
+
+            if (!title || !description || !code || !price || !stock || !category) {
+                alert('Comprobar datos ingresados. Todos los campos son obligatorios.');
+                return;
+            }
+
 
             fetch(`/api/products/todos/${_id}`, {
                 method: 'PUT',
@@ -169,6 +341,12 @@ function agregarProductoAlDOM(product) {
         console.error('El elemento con id "product-list" no existe en el DOM.');
         return;
     }
+
+    if (isNaN(product.price) || isNaN(product.stock)) {
+        alert('Los campos precio y stock deben ser numericos.');
+        return;
+    }
+
 
     const newItem = document.createElement('div');
     newItem.className = 'divCardItem';

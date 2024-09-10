@@ -59,7 +59,7 @@ const serverHTTP = app.listen(PORT, () => console.log(`
 serverSocket = new Server(serverHTTP);
 
 setInterval(() => {
-    let horahhmmss = moment().format('DD/MM/yyyy hh:mm:ss');
+    let horahhmmss = moment().format('DD/MM/yyyy hh:mm:ss A');
 
     serverSocket.emit("HoraServidor", horahhmmss);
 }, 500);
