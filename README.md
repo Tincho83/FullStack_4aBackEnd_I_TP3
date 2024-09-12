@@ -1,15 +1,15 @@
 ![image](/src/public/img/demo.PNG)
-# BackEnd I - PreEntregable TP2
-## _Servidor con endpoints y servicios para gestionar los productos y carritos de compra de un e-commerce integrando vistas Handlebars y websocket._  
+# BackEnd I - PreEntregable TP3
+## _Servidor con endpoints y servicios para gestionar los productos y carritos de compra de un e-commerce integrando vistas Handlebars, websocket y BD._  
   
 ### Vista previa / Preview
 ![image](/src/public/img/demo.gif)
 
 ### Depliegue / Deploy
-[BackEnd I PreEntrega TP2](https://ecommbackend1b.netlify.app/) (No disponible por el momento.)
+[BackEnd I PreEntrega TP3](https://ecommbackend1b.netlify.app/) (No disponible por el momento.)
 
 ### Descripcion / Description
-Aplicativo Backend para e-commerce realizado en javascript, express, Handlebars y websocket para el curso de Backend I en CoderHouse.  
+Aplicativo Backend para e-commerce realizado en javascript, express, Handlebars, websocket y BD para el curso de Backend I en CoderHouse.  
 
 
 ### Construccion / Building
@@ -24,17 +24,22 @@ Aplicativo Backend para e-commerce realizado en javascript, express, Handlebars 
 -  express
 -  express-handlebars
 -  socket.io
+-  moment
+-  mongoose
+-  mongoose-paginate-v2
+-  multer
+-  socket.io
 
 ## Instalacion / Installation
 ### Pasos / Steps
 - Abrir VS Code / Open Vs Code
 - Clonar repositorio / Clone Repository
-   -  **git clone git@github.com:Tincho83/FullStack_4aBackEnd_I_TP2.git**  
+   -  **git clone git@github.com:Tincho83/FullStack_4aBackEnd_I_TP3.git**  
    o  
-   -  **git clone https://github.com/Tincho83/FullStack_4aBackEnd_I_TP2.git**
+   -  **git clone https://github.com/Tincho83/FullStack_4aBackEnd_I_TP3.git**
 
 - Acceder a la carpeta del proyecto / Access to project folder
-   - **cd FullStack_4aBackEnd_I_TP-main**
+   - **cd FullStack_4aBackEnd_I_TP3-main**
 
 - Instalar todas las dependecias del proyecto/ Install dependencies
    - **npm install**
@@ -42,6 +47,11 @@ Aplicativo Backend para e-commerce realizado en javascript, express, Handlebars 
    - **npm install express**
    - **npm install express-handlebars@7.1.3**
    - **npm install socket.io**
+   - **moment**
+   - **mongoose**
+   - **mongoose-paginate-v2**
+   - **multer**
+   - **socket.io**
 
 - Instalar otras herramientas / Install others tools
    - **npm install -g nodemon** (instala nodemon de manera global. Esta herramienta reinicia el servidor cuando detecta cambios en el codigo.)
