@@ -21,7 +21,7 @@
                     {{/each}}
                     {{else}}
                     <img src="https://media.istockphoto.com/id/1216251206/vector/no-image-available-icon.jpg?s=612x612&w=0&k=20&c=6C0wzKp_NZgexxoECc8HD4jRpXATfcu__peSYecAwt0="
-                        alt="Sin Imagen" class="ImgPic" />
+                        alt="Sin Imagen" style="border-radius: 12px;" class="ImgPic" />
                     {{/if}}
                     <div class="ItemData">
                         <p>{{category}}</p>
@@ -46,24 +46,23 @@
         {{/each}}
     </div>
     <div class="paginate" id="paginate">
-        {{#if dataObjectPaginate.hasPrevPage}}
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.prevPage}}"
-            class="pagPrev">{{dataObjectPaginate.prevPage}}</a>
+        {{#if dataObject.hasPrevPage}}
+        <a href="http://localhost:8080{{dataObject.prevLink}}" class="pagPrev">{{dataObject.prevPage}}</a>
         {{else}}
         {{/if}}
 
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.currentPage}}"
-            class="pagCurrent">{{dataObjectPaginate.currentPage}}</a>
+        <a href="http://localhost:8080{{dataObject.pageLink}}" class="pagCurrent">{{dataObject.page}}</a>
 
-        {{#if dataObjectPaginate.hasNextPage}}
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.nextPage}}"
-            class="pagNext">{{dataObjectPaginate.nextPage}}</a>
+        {{#if dataObject.hasNextPage}}
+        <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
         {{else}}
         {{/if}}
 
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.totalPages}}"
-            class="pagLast">{{dataObjectPaginate.totalPages}}</a>
-
+        {{#if dataObject.hasLastPage}}
+        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObject.totalPages}}"
+            class="pagLast">{{dataObject.totalPages}}</a>
+        {{else}}
+        {{/if}}
     </div>
     <hr>
 

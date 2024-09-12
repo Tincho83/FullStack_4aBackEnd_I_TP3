@@ -1,0 +1,41 @@
+<header>
+    <h1>{{titulo}}</h1>
+</header>
+<main>
+    <div style="display: flex;">
+        {{#each products}}
+        <div class="product-details" data-id="{{_id}}">
+            <div class="product-images">
+                {{#if thumbnails.length}}
+                {{#each thumbnails}}
+                <img src="{{this.urlmain}}" alt="{{title}}" class="ImgPic" />
+                {{/each}}
+                {{else}}
+                <img src="https://media.istockphoto.com/id/1216251206/vector/no-image-available-icon.jpg?s=612x612&w=0&k=20&c=6C0wzKp_NZgexxoECc8HD4jRpXATfcu__peSYecAwt0="
+                    alt="Sin Imagen" class="ImgPic" />
+                {{/if}}
+            </div>
+            <div class="product-info">
+                {{#if status}}
+                <p>Disponible: Si</p>
+                {{else}}
+                <p>Disponible: No</p>
+                {{/if }}
+                <h3 style="font-size: 1.5rem;">{{title}}</h3>
+                <p><strong>Categoría:</strong> {{category}}</p>
+                <p><strong>Código:</strong> {{code}}</p>
+                <p><strong>Descripción:</strong> {{description}}</p>
+                <p><strong>Precio:</strong> ${{price}}</p>
+                <p><strong>Disponibilidad:</strong> {{#if status}}Disponible{{else}}No Disponible{{/if}}</p>
+            </div>
+        </div>
+        <div class="product-actions">
+            <button onclick="addToCart('{{_id}}')" class="btn-add-to-cart">Agregar al Carrito</button>
+            <button onclick="continueShopping()" class="btn-continue-shopping">Continuar Comprando</button>
+        </div>
+        {{/each}}
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script defer src="js/product.js"></script>

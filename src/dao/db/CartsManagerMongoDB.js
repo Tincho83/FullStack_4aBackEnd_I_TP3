@@ -7,7 +7,8 @@ class CartsManagerMongoDB {
     }
 
     static async getCartByDBMongo(id) {
-        return await CartsModel.findOne({ _id: id }).lean();
+        //return await CartsModel.findOne({ _id: id }).lean();
+        return await CartsModel.findOne({ _id: id }).populate('products.product').lean();
     }
 
     static async addCartDBMongo(cart) {

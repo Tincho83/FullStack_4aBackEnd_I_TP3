@@ -6,8 +6,10 @@ class ProductsManagerMongoDB {
         return await ProductsModel.find().lean();
     }
 
-    static async getProductsDBMongoPaginate(page = 1, limit = 10, sort) {
-        return await ProductsModel.paginate({}, { page: page, limit: limit, sort: sort, lean: true });
+    static async getProductsDBMongoPaginate(page = 1, limit = 10, sort, searchCriteria = {}) {
+        console.log(`searchCriteria: ${searchCriteria}, page: ${page}, limit: ${limit}, sort: ${sort}`);
+        console.log(`searchCriteria: ${JSON.stringify(searchCriteria)}, page: ${page}, limit: ${limit}, sort: ${JSON.stringify(sort)}`);
+        return await ProductsModel.paginate(searchCriteria, { page: page, limit: limit, sort: sort, lean: true });
     }
 
     static async getProductsByDBMongo(filter = {}) { //{ key:"value", key2: "value" }
