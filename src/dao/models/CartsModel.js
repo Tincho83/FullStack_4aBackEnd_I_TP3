@@ -1,6 +1,6 @@
 const { mongoose } = require("mongoose");
 const { config } = require("../../config/config");
-const  paginate = require("mongoose-paginate-v2");
+const paginate = require("mongoose-paginate-v2");
 
 const cartsColl = config.MONGO_COLLCARTNAME;
 
@@ -30,7 +30,10 @@ const cartsSchema = new mongoose.Schema(
     }
 )
 
-cartsSchema.plugin(paginate);
+//cartsSchema.plugin(paginate);
+cartsSchema.pre("findOne", function () {
+    this.populate("products.product").lean();
+});
 
 const CartsModel = mongoose.model(
     cartsColl,

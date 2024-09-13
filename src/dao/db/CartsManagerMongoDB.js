@@ -1,4 +1,5 @@
 const { CartsModel } = require("../models/CartsModel");
+const { ProductsModel } = require("../models/ProductsModel.js");
 
 class CartsManagerMongoDB {
 
@@ -11,15 +12,26 @@ class CartsManagerMongoDB {
         return await CartsModel.findOne({ _id: id }).populate('products.product').lean();
     }
 
-    static async addCartDBMongo(cart) {
-        console.log("cart manager: ", cart);
+    static async addCartDBMongo() {
+        //console.log("cart manager: ", products);
         let cartNew = await CartsModel.create({ products: [] });
-        console.log("completo cart manager: ", cart);
+        //console.log("completo cart manager: ", products);
         return cartNew.toJSON();
     }
 
+    static async addCartAndProductsDBMongo(products = []) {
+        console.log("cart manager: ", products);
+        let cartNew = await CartsModel.create({ products });
+        console.log("completo cart manager: ", cartNew);
+        return cartNew.toJSON();
+    }
+
+    static async updateCartsDBMongo(id, cart) {
+        return await CartsModel.updateOne({ _id: id }, cart);
+    }
+
     static async addProductToCartDBMongo(cid, pid) {
-        return await ProductsModel.findByIdAndUpdate(id, product, { new: true }).lean();
+        return await ProductsModel.findByIdAndUpdate(cid, pid, { new: true }).lean();
     }
 
     static async updateCartDBMongo(id, cart) {

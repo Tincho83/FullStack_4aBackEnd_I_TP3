@@ -8,6 +8,8 @@ Objetivos específicos
 [_] Profesionalizar las consultas de productos con filtros, paginación y ordenamientos
 [_] Profesionalizar la gestión de carrito para implementar los últimos conceptos vistos.
 
+https://plataforma-beta.coderhouse.com/cursos/70140/programacion-backend-desarrollo-avanzado-de-backend/entregas/66031cd0a073380019132b89
+
 Formato
 [x] Link al repositorio de Github, sin la carpeta de node_modules
 
@@ -19,12 +21,35 @@ Sugerencias
 
 Se debe entregar:
 Con base en nuestra implementación actual de productos, modificar el método GET / para que cumpla con los siguientes puntos:
-[x] Deberá poder recibir por query params un limit (opcional), una page (opcional), un sort (opcional) y un query (opcional)                      < static async getProductsDBMongoPaginate(page = 1, limit = 10, sort, searchCriteria = {}) >
-[x] limit permitirá devolver sólo el número de elementos solicitados al momento de la petición, en caso de no recibir limit, éste será de 10.     < http://localhost:8080/realtimeproductsdb   http://localhost:8080/realtimeproductsdb?limit=7 >
-[x] page permitirá devolver la página que queremos buscar, en caso de no recibir page, ésta será de 1. http://localhost:8080/realtimeproductsdb   < http://localhost:8080/realtimeproductsdb   http://localhost:8080/realtimeproductsdb?page=2&limit=7 >
-[x] query, el tipo de elemento que quiero buscar (es decir, qué filtro aplicar), en caso de no recibir query, realizar la búsqueda general.       < http://localhost:8080/realtimeproductsdb   http://localhost:8080/realtimeproductsdb?query=infusion&type=category > 
-[x] sort: asc/desc, para realizar ordenamiento ascendente o descendente por precio, en caso de no recibir sort, no realizar ningún ordenamiento.  < http://localhost:8080/realtimeproductsdb   http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=title:asc,price:asc >
-[x] El método GET deberá devolver un objeto con el siguiente formato:
+[x] Deberá poder recibir por query params un limit (opcional), una page (opcional), un sort (opcional) y un query (opcional)                      
+	static async getProductsDBMongoPaginate(page = 1, limit = 10, sort, searchCriteria = {})
+
+
+[x] limit permitirá devolver sólo el número de elementos solicitados al momento de la petición, en caso de no recibir limit, éste será de 10.
+	postman:	http://localhost:8080/api/products?limit=7	http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?limit=7	http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?limit=7		http://localhost:8080/products
+
+
+[x] page permitirá devolver la página que queremos buscar, en caso de no recibir page, ésta será de 1.
+	postman:	http://localhost:8080/api/products?page=2		http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?page=2		http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?page=2			http://localhost:8080/products
+
+
+[x] query, el tipo de elemento que quiero buscar (es decir, qué filtro aplicar), en caso de no recibir query, realizar la búsqueda general.
+	postman:	http://localhost:8080/api/products?query=infusion&type=category		http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?query=infusion&type=category 	http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?query=infusion&type=category 		http://localhost:8080/products
+
+
+[x] sort: asc/desc, para realizar ordenamiento ascendente o descendente por precio, en caso de no recibir sort, no realizar ningún ordenamiento.
+	postman:	http://localhost:8080/api/products?sort=title:category,price:asc			http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title:asc,price:asc		http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?page=1&limit=7&sort=title:asc,price:asc			http://localhost:8080/products	
+
+
+[x] El método GET deberá devolver un objeto con el siguiente formato:	
 	{
 		status:success/error
 		payload: Resultado de los productos solicitados
@@ -37,23 +62,54 @@ Con base en nuestra implementación actual de productos, modificar el método GET 
 		prevLink: Link directo a la página previa (null si hasPrevPage=false)
 		nextLink: Link directo a la página siguiente (null si hasNextPage=false)
 	}
+	postman:	http://localhost:8080/api/products?sort=title:category,price:asc			http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title:asc,price:asc		http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?page=1&limit=7&sort=title:asc,price:asc			http://localhost:8080/products	
+
 
 [x] Se deberá poder buscar productos por categoría o por disponibilidad, y se deberá poder realizar un ordenamiento de estos productos de manera ascendente o descendente por precio.
-	< http://localhost:8080/realtimeproductsdb?type=category&query=infusion&limit=2 >
-	< http://localhost:8080/realtimeproductsdb?type=category&query=infusion&sort=price:asc   http://localhost:8080/realtimeproductsdb?type=category&query=infusion&sort=price:desc >
-	< http://localhost:8080/realtimeproductsdb?type=status&query=false&sort=price:asc        http://localhost:8080/realtimeproductsdb?type=status&query=false&sort=price:desc >
-	< http://localhost:8080/realtimeproductsdb?type=status&query=true&sort=price:asc         http://localhost:8080/realtimeproductsdb?type=status&query=true&sort=price:desc >
-							  
+	postman:	http://localhost:8080/api/products?type=category&query=infusion				http://localhost:8080/api/products?type=status&query=true
+	url web:	http://localhost:8080/realtimeproducts?type=category&query=infusion&limit=2		http://localhost:8080/realtimeproducts?type=status&query=true&limit=20
+	url web:	http://localhost:8080/products?type=category&query=infusion&limit=20			http://localhost:8080/realtimeproducts?type=status&query=true&limit=2
+
+						  
 Además, agregar al router de carts los siguientes endpoints:
-[?] DELETE "api/carts/:cid/products/:pid" deberá eliminar del carrito el producto seleccionado.
-[?] PUT "api/carts/:cid" deberá actualizar todos los productos del carrito con un arreglo de productos.
-[?] PUT "api/carts/:cid/products/:pid" deberá poder actualizar SÓLO la cantidad de ejemplares del producto por cualquier cantidad pasada desde req.body
-[?] DELETE "api/carts/:cid" deberá eliminar todos los productos del carrito
+route	 Metodo	Path			urlPosman											Body
+products Get	/			http://localhost:8080/api/products
+products Get	/:id			http://localhost:8080/api/products/66d1391183af7911ef043b1f
+products Post	/			http://localhost:8080/api/products								{"title":"Te en Hebras Premium 100g", "description":"Te en hebras", "code":"TEPR008", "price":19000, "stock": 7, "category": "Infusion"}
+products Put	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6					{"title":"Te en Hebras 100g", "description":"Te en hebras en bolsa", "price":25000 }
+products Delete	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6
+carts	 Get	/			http://localhost:8080/api/carts/
+carts	 Get	/:id			http://localhost:8080/api/carts/66d1ed84136c0cf34a0b159d
+carts	 Post	/			http://localhost:8080/api/carts/				
+carts	 Post	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
+carts	 Delete	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
+carts	 Put	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c					[ { "product": "66d138df83af7911ef043b1c", "quantity": 3 }, { "product": "66d1392283af7911ef043b20", "quantity": 7 } ]
+carts	 Put	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d1392283af7911ef043b20	{
+ "quantity": 5 
+}
+carts	 Delete	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c
+
+
+[x] DELETE "api/carts/:cid/products/:pid" deberá eliminar del carrito el producto seleccionado.
+
+[x] PUT "api/carts/:cid" deberá actualizar todos los productos del carrito con un arreglo de productos.
+
+[x] PUT "api/carts/:cid/products/:pid" deberá poder actualizar SÓLO la cantidad de ejemplares del producto por cualquier cantidad pasada desde req.body
+
+[x] DELETE "api/carts/:cid" deberá eliminar todos los productos del carrito
+
 [x] Esta vez, para el modelo de Carts, en su propiedad products, el id de cada producto generado dentro del array tiene que hacer referencia al modelo de Products. 
-[?] Modificar la ruta /:cid para que al traer todos los productos, los traiga completos mediante un “populate”. De esta manera almacenamos sólo el Id, pero al solicitarlo podemos desglosar los productos asociados.
-[?] Modificar la vista index.handlebars en el router de views ‘/products’, creada en la pre-entrega anterior, para visualizar todos los productos con su respectiva paginación.
+
+[x] Modificar la ruta /:cid para que al traer todos los productos, los traiga completos mediante un “populate”. De esta manera almacenamos sólo el Id, pero al solicitarlo podemos desglosar los productos asociados.
+
+[x] Modificar la vista index.handlebars en el router de views ‘/products’, creada en la pre-entrega anterior, para visualizar todos los productos con su respectiva paginación.
     Además, cada producto mostrado puede resolverse de dos formas:
+
 [?] Llevar a una nueva vista con el producto seleccionado con su descripción completa, detalles de precio, categoría, etc. Además de un botón para agregar al carrito.
     Sugerencia de la ruta: “/products/:pid”. 
+
 [?] Contar con el botón de “agregar al carrito” directamente, sin necesidad de abrir una página adicional con los detalles del producto.
+
 [?] Además, agregar una vista en ‘/carts/:cid (cartId) para visualizar un carrito específico, donde se deberán listar SOLO los productos que pertenezcan a dicho carrito.

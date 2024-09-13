@@ -35,11 +35,7 @@
                 </div>
                 <div class="ItemCardFooter">
                     <button onclick="ViewProduct('{{_id}}')" id="btnViewProduct">View Product</button>
-                    <button onclick="AddProducttoCart('{{_id}}')" id="btnAddProdToCart">Add Product to Cart</button>
-                    <button onclick="DeleteProduct('{{_id}}')" id="btnDelete">Delete Product</button>
-                    <button
-                        onclick="ModifyProduct('{{_id}}', '{{title}}', '{{description}}', '{{code}}', {{price}}, {{stock}}, '{{category}}')"
-                        id="btnModify">Modify Product</button>
+                    <button onclick="AddProducttoCart('{{_id}}')" id="btnAddProdToCart">Add Product to Cart</button>                    
                 </div>
             </div>
         </div>
@@ -59,7 +55,7 @@
         {{/if}}
 
         {{#if dataObject.hasLastPage}}
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObject.totalPages}}"
+        <a href="http://localhost:8080/products?page={{dataObject.totalPages}}"
             class="pagLast">{{dataObject.totalPages}}</a>
         {{else}}
         {{/if}}

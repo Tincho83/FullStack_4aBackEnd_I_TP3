@@ -12,12 +12,13 @@ const router = Router();
 CartsManager.path = "./src/data/carrito.json";
 
 // Inicio DB
-router.get('/todos', async (req, res) => {
+// 1.Obtener todos los carritos
+router.get('/', async (req, res) => {
     console.log("entro get");
 
     try {
         let carts = await CartsManagerMongoDB.getCartsDBMongo();
-        console.log(`Se encontraron ${carts.length} productos.`);
+        console.log(`Se encontraron ${carts.length} carritos.`);
         res.setHeader('Content-type', 'application/json');
         return res.status(200).json({ carts })
     } catch (error) {
@@ -30,8 +31,8 @@ router.get('/todos', async (req, res) => {
     }
 })
 
-//5
-router.get('/todos/:cid', async (req, res) => {
+// 2.Obtener carrito y sus productos
+router.get('/:cid', async (req, res) => {
     console.log("entro get by id");
 
     let { cid } = req.params;
@@ -77,28 +78,19 @@ router.get('/todos/:cid', async (req, res) => {
                error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
                detalle: `${error.message}`
            });
-       }
-   
+       }   
        */
-
 });
 
-router.post('/todos', async (req, res) => {
+// 3.Agregar carrito
+router.post('/', async (req, res) => {
     console.log("entro post");
 
     const { products = [] } = req.body;
     console.log("prod: ", products);
 
-    let carts = await CartsManagerMongoDB.getCartsDBMongo();
-    console.log("carts: ", carts);
-
-    let id = 1;
-    if (carts.length > 0) {
-        id = carts[carts.length - 1].id + 1;
-    }
-    console.log("id new cart: ", id);
     try {
-        let cartnuevo = await CartsManagerMongoDB.addCartDBMongo({ products });
+        let cartnuevo = await CartsManagerMongoDB.addCartDBMongo();
 
         console.log("Carrito Nuevo: ", cartnuevo);
 
@@ -114,10 +106,11 @@ router.post('/todos', async (req, res) => {
         });
     }
 })
-//6
+
+//4.Agregar producto al carrito
 router.post("/:cid/product/:pid", async (req, res) => {
-    const cid = req.params.cid;
-    const pid = req.params.pid;
+
+    let { cid, pid } = req.params;
 
     // Validar los ID
     if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
@@ -127,21 +120,38 @@ router.post("/:cid/product/:pid", async (req, res) => {
     console.log(`Carrito ID: ${cid}, Producto ID: ${pid}`);
 
     try {
-        const cart = await CartsManagerMongoDB.getCartById(cid);
+        const cart = await CartsManagerMongoDB.getCartByDBMongo(cid);
         if (!cart) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({ error: `Carrito inexistente ${cid}` });
         }
 
-        const product = await ProductsManagerMongoDB.getProductById(pid);
+        const product = await ProductsManagerMongoDB.getProductsByDBMongo({ _id: pid });
         if (!product) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({ error: `Producto ${pid} inexistente...!!!` });
         }
 
-        await CartsManagerMongoDB.addProductToCartDBMongo(cid, pid);
-        res.setHeader('Content-type', 'application/json');
-        res.status(200).json('Producto agregado al carrito');
+        console.log(JSON.stringify(cart, null, 5));
+
+        let indexProduct = cart.products.findIndex(p => p.product._id == pid);
+        if (indexProduct === -1) {
+            cart.products.push({
+                product: pid, quantity: 1
+            })
+        } else {
+            cart.products[indexProduct].quantity++;
+        }
+
+        let resultado = await CartsManagerMongoDB.updateCartsDBMongo(cid, cart);
+        if (resultado.modifiedCount > 0) {
+            res.setHeader('Content-type', 'application/json');
+            res.status(200).json({ message: "Producto agregado al carrito" });
+        } else {
+            res.setHeader('Content-type', 'application/json');
+            res.status(400).json({ error: "Error al agregar un producto al carrito" });
+        }
+
     } catch (error) {
         console.error('Error al agregar el producto al carrito:', error);
         res.setHeader('Content-type', 'application/json');
@@ -149,8 +159,9 @@ router.post("/:cid/product/:pid", async (req, res) => {
     }
 
 });
-//1
-router.delete('/:cid/products/:pid', async (req, res) => {
+
+//5.Borra producto del carrito
+router.delete('/:cid/product/:pid', async (req, res) => {
     console.log("entro delete carritoId y prodId");
 
     let { cid, pid } = req.params;
@@ -166,40 +177,38 @@ router.delete('/:cid/products/:pid', async (req, res) => {
         // Obtener el carrito actual
         let cart = await CartsManagerMongoDB.getCartByDBMongo(cid);
         if (!cart) {
+            console.log(`Carrito NO encontrado ${cart}`);
             res.setHeader('Content-type', 'application/json');
             return res.status(404).json({ error: `Carrito no encontrado con ID: ${cid}` });
         }
+        console.log(`Carrito encontrado ${JSON.stringify(cart, null, 5)}`);
+        console.log(`...`);
 
-        // Verificar si el producto está en el carrito
-        let productIndex = cart.products.findIndex(p => p.product.toString() === pid);
-        if (productIndex === -1) {
+        // Filtrar los productos para eliminar el producto especificado
+        const updatedProducts = cart.products.filter(item => item.product._id.toString() !== pid);
+        // Si no se modifica nada, es porque el producto no estaba en el carrito
+        if (updatedProducts.length === cart.products.length) {
+            console.log(`Producto con ID: ${pid} no encontrado en el carrito.`);
             res.setHeader('Content-type', 'application/json');
-            return res.status(404).json({ error: `Producto no encontrado en el carrito con ID: ${pid}` });
+            return res.status(404).json({ error: `Producto con ID: ${pid} no encontrado en el carrito.` });
         }
 
-        // Eliminar el producto del carrito
-        cart.products.splice(productIndex, 1);
-        //await CartsManagerMongoDB.updateCartDBMongo(cid, cart);
+        // Actualizar el carrito con la nueva lista de productos
+        cart.products = updatedProducts;
         let prodDelete = await CartsManagerMongoDB.updateCartDBMongo(cid, cart);
+
         if (!prodDelete) {
             res.setHeader('Content-type', 'application/json');
             return res.status(400).json({ error: `No se pudo eliminar el producto id: ${cid}` })
         } else {
+            console.log(`Producto con ID: ${pid} eliminado del carrito con ID: ${cid}`)
+
             req.socket.emit("ProductoBorrado", pid);
             console.log("Evento *ProductoBorrado* emitido");
 
             res.setHeader('Content-type', 'application/json');
-            return res.status(200).json({ message: `Producto id: ${cid} eliminado del carrito exitosamente.` });
+            return res.status(200).json({ message: `Producto id: ${pid} eliminado del carrito ${cid} exitosamente.` });
         }
-
-        //let prodDelete = await ProductsManagerMongoDB.deleteProductDBMongo(id);
-        //if (!prodDelete) {
-        //    res.setHeader('Content-type', 'application/json');
-        //    return res.status(400).json({ error: `No se pudo eliminar el producto id: ${id}` })
-        //} else {
-        //   res.setHeader('Content-type', 'application/json');
-        //    return res.status(200).json({ prodDelete })
-        //}
     } catch (error) {
         console.log(error);
         res.setHeader('Content-type', 'application/json');
@@ -210,27 +219,20 @@ router.delete('/:cid/products/:pid', async (req, res) => {
     }
 })
 
-//2
-router.put('/todos/:cid', async (req, res) => {
+//6.Actualizar carrito desde un arreglo
+router.put('/:cid', async (req, res) => {
     console.log("\r\nentro al put");
 
     const { cid } = req.params;
-    const productsToUpdate = req.body;
-
-    console.log("con body:", productsToUpdate);
-
-    if (!productsToUpdate.title || !productsToUpdate.description || !productsToUpdate.code || !productsToUpdate.price || !productsToUpdate.stock || !productsToUpdate.category) {
-        res.setHeader('Content-type', 'application/json');
-        return res.send({ status: "error", error: "Incomplete values" })
-    }
-
-
     // Validar el ID del carrito
     if (!isValidObjectId(cid)) {
         res.setHeader('Content-type', 'application/json');
         return res.status(400).json({ error: `id: ${cid} no valido,` })
     }
     console.log("con params id:", cid);
+
+    const productsToUpdate = req.body;
+    console.log("con body:", productsToUpdate);
 
     // Validar que el body contiene un arreglo de productos
     if (!Array.isArray(productsToUpdate)) {
@@ -262,6 +264,8 @@ router.put('/todos/:cid', async (req, res) => {
 
         // Actualizar el carrito con los nuevos productos
         cart.products = productsToUpdate;
+
+        // Actualizar el carrito en la base de datos
         const updatedCart = await CartsManagerMongoDB.updateCartDBMongo(cid, cart);
 
         if (!updatedCart) {
@@ -286,109 +290,38 @@ router.put('/todos/:cid', async (req, res) => {
             detalle: `${error.message}`
         });
     }
-
-
-    /*
-    
-        let prodToModify = req.body;
-        console.log("con body:", prodToModify);
-    
-        if (!prodToModify.title || !prodToModify.description || !prodToModify.code || !prodToModify.price || !prodToModify.stock || !prodToModify.category) {
-            res.setHeader('Content-type', 'application/json');
-            return res.send({ status: "error", error: "Incomplete values" })
-        }
-    
-        //let existingProduct = await ProductsModel.findOne({ id: prodToModify.id });
-        let existingProduct = await ProductsModel.findOne({ id: cid });
-        console.log("Producto existente en DB? ", existingProduct);
-        console.log("con params id:", cid);
-    
-        if (existingProduct && existingProduct.id !== cid) {
-            console.log(existingProduct);
-            res.setHeader('Content-type', 'application/json');
-            return res.send({ status: "error", error: "Duplicate ID found" });
-        }
-    
-        console.log("reemplazar");
-    
-    
-    
-        try {
-            let prodModified = await ProductsManagerMongoDB.updateProductDBMongo(id, prodToModify)
-            if (!prodModified) {
-                res.setHeader('Content-type', 'application/json');
-                return res.status(400).json({ error: `No se a podido actualizar el producto id: ${id}, ${prodModified}` })
-            }
-            console.log(prodModified);
-    
-            req.socket.emit("ProductoActualizado", prodModified);
-            console.log("Evento *ProductoActualizado* emitido");
-    
-            res.setHeader('Content-type', 'application/json');
-            return res.status(200).json({ success: `producto actualizado id: ${id}, ${prodModified}` })
-    
-        } catch (error) {
-            console.log(error);
-            res.setHeader('Content-type', 'application/json');
-            return res.status(500).json({
-                error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
-                detalle: `${error.message}`
-            });
-        }
-    */
-
-
-    //let result = await ProductsModel.updateOne({ _id: prodid });
-    //let result = await ProductsModel.updateOne({ id: prodid });
-    //return res.send({ status: "sucess", payload: result })
-
-    /*
-        try {
-            let result = await ProductsModel.updateOne(
-                { id: prodid },
-                { $set: prodToModify }
-            );
-            if (result.modifiedCount > 0) {
-                return res.send({ status: "success", payload: result });
-            } else {
-                return res.send({ status: "error", error: "No document found with the provided ID" });
-            }
-        } catch (error) {
-            return res.send({ status: "error", error: error.message });
-        }
-    */
-
-
 });
 
-//3
-router.put('/todos/:cid/products/:pid', async (req, res) => {
+//7.Actualizar en el carrito la cantidad de un producto pasado por body
+router.put('/:cid/product/:pid', async (req, res) => {
     console.log("\r\nentro al put");
 
     const { cid, pid } = req.params;
-    const { quantity } = req.body;
-
     // Validar el ID del carrito y del producto
     if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
         res.setHeader('Content-type', 'application/json');
         return res.status(400).json({ error: "ID de carrito o producto no válido" });
     }
+
+    const { quantity } = req.body;
     // Validar que la cantidad sea un número mayor que 0
     if (!quantity || typeof quantity !== "number" || quantity <= 0) {
         return res.status(400).json({ error: "Cantidad no válida, debe ser un número mayor que 0" });
     }
 
-
-    console.log("reemplazar");
+    console.log("carrito: ", cid);
+    console.log("producto: ", pid);
+    console.log("cantidad: ", quantity);
 
     try {
+        console.log("...");
         // Verificar si el carrito existe en la base de datos
         const cart = await CartsManagerMongoDB.getCartByDBMongo(cid);
         if (!cart) {
             res.setHeader('Content-type', 'application/json');
             return res.status(404).json({ error: `Carrito no encontrado con ID: ${cid}` });
         }
-
+        console.log("... ...");
         // Verificar si el producto existe en la base de datos
         const product = await ProductsManagerMongoDB.getProductsByDBMongo({ _id: pid });
         if (!product) {
@@ -396,18 +329,21 @@ router.put('/todos/:cid/products/:pid', async (req, res) => {
             return res.status(404).json({ error: `Producto no encontrado con ID: ${pid}` });
         }
 
-        // Encontrar el producto en el carrito
-        const productInCart = cart.products.find(p => p.product.toString() === pid);
-        if (!productInCart) {
+        let indexProduct = cart.products.findIndex(p => p.product._id == pid);
+        if (indexProduct === -1) {
             res.setHeader('Content-type', 'application/json');
-            return res.status(404).json({ error: `Producto no encontrado en el carrito con ID: ${pid}` });
+            return res.status(404).json({ error: `Producto con ID: ${pid} no encontrado en el carrito ID: ${cid}.` });
+        } else {
+           cart.products[indexProduct].quantity = quantity;
         }
-
-        // Actualizar la cantidad del producto en el carrito
-        productInCart.quantity = quantity;
 
         // Guardar el carrito actualizado
         const updatedCart = await CartsManagerMongoDB.updateCartDBMongo(cid, cart);
+
+        if (!updatedCart) {
+            res.setHeader('Content-type', 'application/json');
+            return res.status(400).json({ error: `No se pudo actualizar el carrito con ID: ${cid}` });
+        }
 
         console.log("Carrito actualizado: ", updatedCart);
 
@@ -427,8 +363,8 @@ router.put('/todos/:cid/products/:pid', async (req, res) => {
     }
 });
 
-//4
-router.delete('/todos/:cid', async (req, res) => {
+//8.Borrar todos los productos del carrito
+router.delete('/:cid', async (req, res) => {
     console.log("entro delete carritoId");
 
     let { cid } = req.params;
@@ -459,7 +395,7 @@ router.delete('/todos/:cid', async (req, res) => {
             res.setHeader('Content-type', 'application/json');
             return res.status(400).json({ error: `No se pudo eliminar los productos del carrito id: ${cid}` })
         } else {
-            req.socket.emit("ProductoBorrado", id);
+            req.socket.emit("ProductoBorrado", cid);
             console.log("Evento *ProductoBorrado* emitido");
 
             res.setHeader('Content-type', 'application/json');
@@ -474,112 +410,7 @@ router.delete('/todos/:cid', async (req, res) => {
         });
     }
 })
-
-
 // Fin DB
-
-router.post("/", async (req, res) => {
-
-    const { products = [] } = req.body;
-
-
-    let carts = await CartsManager.getCarts();
-
-    let id = 1;
-    if (carts.length > 0) {
-        id = carts[carts.length - 1].id + 1;
-    }
-
-    try {
-        let cartnuevo = await CartsManager.addCart({ products });
-
-        console.log("Carrito Nuevo: ", cartnuevo);
-
-        res.setHeader('Content-type', 'application/json');
-        return res.status(200).json({ cartnuevo });
-
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-});
-
-
-router.get("/:cid", async (req, res) => {
-    let { cid } = req.params;
-    cid = Number(cid);
-
-    if (isNaN(cid)) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Debe ingresar un Id numerico.` });
-    }
-
-    let carts;
-
-    try {
-        carts = await CartsManager.getCarts();
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-
-    let cart = carts.find(idc => idc.id === cid);
-
-    if (!cart) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `ID Cart ${cid} not found.` });
-    }
-
-    console.log("Productos del carrito '" + cid + "'", cart.products);
-
-    res.setHeader('Content-type', 'application/json');
-    return res.status(200).json({ payload: cart.products });
-
-});
-
-
-router.post("/:cid/product/:pid", async (req, res) => {
-    const cid = parseInt(req.params.cid);
-    const pid = parseInt(req.params.pid);
-
-    if (isNaN(cid) || isNaN(pid)) {
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(400).json({ error: `Los ids deben ser numericos.` })
-    }
-
-    carts = await CartsManager.getCarts();
-    let cart = carts.find(c => c.id === cid)
-    if (!cart) {
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(400).json({ error: `Carrito inexistente ${cid}` })
-    }
-
-    let prodss = await ProductsManager.getProducts();
-    let existe = prodss.find(c => c.id === pid)
-    if (!existe) {
-        res.setHeader('Content-Type', 'application/json');
-        return res.status(400).json({ error: `Producto ${pid} inexistente...!!!` })
-    }
-
-    try {
-        await CartsManager.addProductToCart(cid, pid);
-        res.setHeader('Content-type', 'application/json');
-        res.status(200).json('Producto agregado al carrito');
-    } catch (error) {
-        res.setHeader('Content-type', 'application/json');
-        res.status(500).send('Error al agregar el producto al carrito');
-    }
-
-});
-
 
 module.exports = { router };
 

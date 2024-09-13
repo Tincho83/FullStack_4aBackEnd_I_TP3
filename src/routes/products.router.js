@@ -9,10 +9,28 @@ const router = Router();
 ProductsManager.path = "./src/data/productos.json";
 
 // Inicio DB
-router.get('/todos', async (req, res) => {
+router.get('/', async (req, res) => {
     console.log("\r\nentro get");
 
-    let { page, limit, sort, query } = req.query;
+    let prodss;
+    let dataObject = {};
+    let cSort = {};
+
+    let { page, limit, sort, query, type } = req.query;
+
+    // Validación de los parámetros
+    if (type && !['category', 'price', 'title', 'status', 'stock'].includes(type)) {
+        dataObject = {
+            status: 'error',
+            message: 'Tipo de búsqueda inválido.'
+        };
+        console.log(`${dataObject.status}: ${dataObject.message} `);
+
+        // Retornar un error 400 (Bad Request) indicando que el tipo no es válido
+        res.setHeader('Content-type', 'application/json');
+        return res.status(400).json(dataObject);
+    }
+
 
     if (!page || isNaN(Number(page))) {
         page = 1;
@@ -25,49 +43,132 @@ router.get('/todos', async (req, res) => {
     }
     console.log(`limite: ${limit}`);
 
-   
-        console.log(`orden: ${sort}`);
+    if (!sort) {
+        console.log(`orden no definida: ${sort}`);
+    } else {
+        let criteriosSep = sort.split(',');
 
+        criteriosSep.forEach(element => {
+            let [criterio, orden] = element.split(':');
 
+            console.log(`Criterio: ${criterio}, Orden: ${orden}`);
 
-    // Filtro de búsqueda    //&query=category:infusion
-    let filter = {};
-    if (query) {
-        let queryparm = query.split(":");
-        filter[queryparm[0]] = queryparm[1];
-        console.log(`consulta: ${query}`);
-     }
+            let valorOrden = (orden === 'asc') ? 1 : (orden === 'desc') ? -1 : null;
 
-     sort = "price: -1"
-    console.log(`Filtro:\r\n ${JSON.stringify(filter, null, 5)}`);
+            if (valorOrden !== null) {
+                cSort[criterio] = valorOrden;
+            }
 
+        });
 
-
-
-
-
-    console.log(`pagina: ${page}`);
-    console.log(`limite: ${limit}`);
-    console.log(`orden: ${sort}`);
-    console.log(`consulta: ${query}`);
-    console.log(`Filtro:\r\n ${JSON.stringify(filter, null, 5)}`);
-
-    /*
-    try {
-        let products = await ProductsModel.find();
-        console.log("products", products);
-        res.send({ result: "success", payload: products });
-    } catch (error) {
-        console.log("Cannot get users with mongoose: " + error);
+        console.log(`Criterios de orden definidos:`, cSort);
     }
-    */
+
+    let searchCriteria = {};
+    let { detalle } = req.query;
+    if (detalle) {
+        console.log(detalle);
+    }
+
     try {
-        //let products = await ProductsManagerMongoDB.getProductsDBMongo();
-        let products = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page, limit);
-        //console.log(`Products: ${JSON.stringify(products.docs, null, 5)}`);
-        //console.log(`Se encontraron ${products.docs.length} productos.`);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(200).json({ products })
+        if (!query) {
+            console.log('Realizando búsqueda general');
+            prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page, limit, cSort);
+            //prodss.products = products.docs;
+            //delete products.docs;
+        } else {
+            console.log('Realizando búsqueda por criterio');
+            console.log(`query: ${query}, type: ${type}`);
+
+            // Construir el criterio de búsqueda con base en el tipo de filtro
+            if (type === 'category') {
+                searchCriteria = { category: new RegExp(query, 'i') };
+            } else if (type === 'price') {
+                searchCriteria = { price: query };
+            } else if (type === 'title') {
+                searchCriteria = { title: new RegExp(query, 'i') }; // Búsqueda insensible a mayúsculas/minúsculas
+            } else if (type === 'status') {
+                searchCriteria = { status: query.toLowerCase() === 'true' };
+            } else if (type === 'stock') {
+                searchCriteria = { stock: query }; // Búsqueda insensible a mayúsculas/minúsculas
+            }
+
+            console.log(`criterio: ${JSON.stringify(searchCriteria)}`);
+
+            // Aquí utilizamos el criterio de búsqueda en la consulta
+            prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page, limit, cSort, searchCriteria);
+
+            if (prodss.docs.length === 0) {
+                dataObject = {
+                    status: 'error',
+                    message: 'No se encontraron productos que coincidan con la búsqueda.'
+                };
+
+                console.log(`${dataObject.status}: ${dataObject.message} `);
+
+                // Retornar una respuesta con status 404 para indicar que no se encontraron productos
+                res.setHeader('Content-type', 'application/json');
+                return res.status(404).json(dataObject);
+                //return res.status(200).json({ dataObject })
+            }
+        }
+
+        let prevLink;
+        let nextLink;
+        let pageLink;
+        let showLastPage;
+
+        if (prodss.hasPrevPage) {
+            if (!sort) {
+                prevLink = `/products?page=${prodss.prevPage}&limit=${limit}`;
+            } else {
+                prevLink = `/products?page=${prodss.prevPage}&limit=${limit}&sort=${sort}`;
+            }
+        } else {
+            prevLink = null;
+        }
+
+        if (prodss.hasNextPage) {
+            if (!sort) {
+                nextLink = `/products?page=${prodss.nextPage}&limit=${limit}`;
+            } else {
+                nextLink = `/products?page=${prodss.nextPage}&limit=${limit}&sort=${sort}`;
+            }
+        } else {
+            nextLink = null;
+        }
+
+        if (!sort && !limit) {
+            pageLink = `/products?page=${prodss.page}`;
+        } else if (limit && !sort) {
+            pageLink = `/products?page=${prodss.page}&limit=${limit}`;
+        } else if (sort && !limit) {
+            pageLink = `/products?page=${prodss.page}&sort=${sort}`;
+        } else if (sort && limit) {
+            pageLink = `/products?page=${prodss.page}&limit=${limit}&sort=${sort}`;
+        }
+
+        if (prodss.nextPage == prodss.totalPages || !prodss.nextPage) {
+            showLastPage = false;
+        } else {
+            showLastPage = true;
+        }
+
+        dataObject = {
+            status: 'success',
+            payload: prodss.docs,
+            totalPages: prodss.totalPages,
+            prevPage: prodss.prevPage,
+            nextPage: prodss.nextPage,
+            page: prodss.page,
+            pageLink: pageLink,
+            hasPrevPage: prodss.hasPrevPage,
+            hasNextPage: prodss.hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink,
+            hasLastPage: showLastPage
+        };
+
     } catch (error) {
         console.log(error);
         res.setHeader('Content-type', 'application/json');
@@ -76,9 +177,12 @@ router.get('/todos', async (req, res) => {
             detalle: `${error.message}`
         });
     }
+    res.setHeader('Content-type', 'application/json');
+    return res.status(200).json({ dataObject })
+
 })
 
-router.get('/todos/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     console.log("entro get by id");
 
     let { id } = req.params;
@@ -109,7 +213,7 @@ router.get('/todos/:id', async (req, res) => {
 
 })
 
-router.post('/todos', async (req, res) => {
+router.post('/', async (req, res) => {
     //let { id, title, description, code, price, stock, category } = req.body;
     let { title, description, code, price, stock, category } = req.body;
 
@@ -153,7 +257,7 @@ router.post('/todos', async (req, res) => {
     }
 })
 
-router.put('/todos/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     console.log("\r\nentro al put");
 
     let { id } = req.params;
@@ -166,11 +270,12 @@ router.put('/todos/:id', async (req, res) => {
     let prodToModify = req.body;
     console.log("con body:", prodToModify);
 
+    /*
     if (!prodToModify.title || !prodToModify.description || !prodToModify.code || !prodToModify.price || !prodToModify.stock || !prodToModify.category) {
         res.setHeader('Content-type', 'application/json');
         return res.send({ status: "error", error: "Incomplete values" })
     }
-
+*/
     //let existingProduct = await ProductsModel.findOne({ id: prodToModify.id });
     let existingProduct = await ProductsModel.findOne({ id: id });
     console.log("Producto existente en DB? ", existingProduct);
@@ -234,7 +339,7 @@ router.put('/todos/:id', async (req, res) => {
 
 })
 
-router.delete('/todos/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     console.log("entro delete");
 
     let { id } = req.params;
@@ -267,230 +372,5 @@ router.delete('/todos/:id', async (req, res) => {
     }
 })
 // Fin DB
-
-// FileSystem
-router.get("/", async (req, res) => {
-    let prodss;
-
-    try {
-        prodss = await ProductsManager.getProducts();
-        console.log(prodss);
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
-            detalle: `${error.message}`
-        });
-    }
-
-    let { limit, skip } = req.query;
-
-    if (limit) {
-        limit = Number(limit);
-        if (isNaN(limit)) {
-            res.setHeader('Content-type', 'application/json');
-            return res.status(400).json({ error: `El argumento limit debe ser numerico.` });
-        }
-    } else {
-        limit = prodss.length;
-    }
-
-    if (skip) {
-        skip = Number(skip);
-        if (isNaN(skip)) {
-            res.setHeader('Content-type', 'application/json');
-            return res.status(400).json({ error: `El argumento skip debe ser numerico.` });
-        }
-    } else {
-        skip = 0;
-    }
-
-    let resultado = prodss.slice(skip, skip + limit);
-
-    res.setHeader('Content-type', 'application/json');
-    return res.status(200).json({ resultado });
-});
-
-router.get("/:pid", async (req, res) => {
-    let { pid } = req.params;
-    pid = Number(pid);
-
-    if (!isValidObjectId(pid)) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Id no valido.` });
-    }
-
-    if (isNaN(pid)) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Debe ingresar un Id numerico.` });
-    }
-
-    let prods;
-
-    try {
-        prods = await ProductsManager.getProducts();
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-
-    let prod = prods.find(idp => idp.id === pid);
-
-    if (!prod) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `ID Product ${pid} not found.` });
-    }
-
-    res.setHeader('Content-type', 'application/json');
-    return res.status(200).json({ payload: prod });
-
-});
-
-router.post("/", async (req, res) => {
-
-    const { title, description, code, price, status = true, stock, category, thumbnails = [] } = req.body;
-
-    if (!title || !description || !code || !price || !stock || !category) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: 'Por favor complete todos los atributos, son obligatorios, excepto thumbnails' });
-    }
-
-    let prods = await ProductsManager.getProducts();
-
-    let existe = prods.find(prod => prod.code.toLowerCase() === code.toLowerCase());
-
-    if (existe) {
-        console.log("Producto Existente: ", existe);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Ya existe un producto con codigo ${code}` });
-    } else {
-        console.log("Producto Existente: No");
-    }
-
-    let id = 1;
-    if (prods.length > 0) {
-        id = prods[prods.length - 1].id + 1;
-    }
-
-    try {
-        let prodnuevo = await ProductsManager.addProduct({ title, description, code, price, status, stock, category, thumbnails });
-
-        req.socket.emit("nuevoProducto", prodnuevo);
-        console.log("Evento *nuevoProducto* emitido");
-
-        res.setHeader('Content-type', 'application/json');
-        return res.status(200).json({ prodnuevo });
-
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-
-});
-
-
-router.put("/:pid", async (req, res) => {
-
-    let { pid } = req.params;
-    pid = Number(pid);
-    if (isNaN(pid)) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Debe ingresar un Id numerico.` });
-    }
-
-    let prods;
-    try {
-        prods = await ProductsManager.getProducts();
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-
-    let prod = prods.find(idp => idp.id === pid);
-
-    if (!prod) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `ID Product ${pid} not found.` });
-    }
-
-    let { ...aModificar } = req.body; // tambien puede ser let aModificar = req.body;
-
-    delete aModificar.id;
-
-    if (aModificar.name) {
-        let existe = prods.find(prod => prod.name.toLowerCase() === aModificar.name.toLowerCase() && prod.id !== pid);
-
-        if (existe) {
-            res.setHeader('Content-type', 'application/json');
-            return res.status(400).json({ error: `Name Product ${aModificar.name} ya existe.` });
-        }
-    }
-
-    try {
-        let prodModific = await ProductsManager.updateProduct(pid, aModificar);
-        console.log("Producto Actualizado:", prodModific);
-
-        req.socket.emit("ProductoActualizado", prodModific);
-        console.log("Evento *ProductoActualizado* emitido");
-
-        res.setHeader('Content-type', 'application/json');
-        return res.status(200).json({ success: true, product: prodModific });
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-});
-
-
-router.delete("/:pid", async (req, res) => {
-
-    let { pid } = req.params;
-    pid = Number(pid);
-    if (isNaN(pid)) {
-        res.setHeader('Content-type', 'application/json');
-        return res.status(400).json({ error: `Debe ingresar un Id numerico.` });
-    }
-
-    try {
-        let prodresult = await ProductsManager.deleteProduct(pid);
-        if (prodresult > 0) {
-
-            req.socket.emit("ProductoBorrado", pid);
-            console.log("Evento *ProductoBorrado* emitido");
-
-            res.setHeader('Content-type', 'application/json');
-            return res.status(200).json({ payload: `Producto Id ${pid} eliminado.` });
-
-        } else {
-            res.setHeader('Content-type', 'application/json');
-            return res.status(500).json({ error: `Error al eliminar.` });
-        }
-
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde.`,
-            detalle: `${error.message}`
-        });
-    }
-});
 
 module.exports = { router };

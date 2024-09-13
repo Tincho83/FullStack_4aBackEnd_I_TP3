@@ -15,7 +15,7 @@ const productListDiv = document.getElementById("product-list");
 const getProducts = async () => {
 
     let res = await fetch(`/api/products/todos`);
-    //let res = await fetch(`/realtimeproductsdb`);
+    //let res = await fetch(`/realtimeproducts`);
     let data = await res.json();
     console.log("\r\nentro realtimeproducts.js");
     console.log(`Se hencontraron ${data.products.docs.length} productos.`);

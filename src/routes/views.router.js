@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 // Para DB
-router.get('/cartsdb/:cid', async (req, res) => {
+router.get('/carts/:cid', async (req, res) => {
 
     let { detalle } = req.query;
     if (detalle) {
@@ -49,7 +49,7 @@ router.get('/cartsdb/:cid', async (req, res) => {
     });
 })
 
-router.get('/productsdb', async (req, res) => {
+router.get('/products', async (req, res) => {
 
     let titulo = "Listado de Productos";
     let prodss;
@@ -157,9 +157,9 @@ router.get('/productsdb', async (req, res) => {
 
         if (prodss.hasPrevPage) {
             if (!sort) {
-                prevLink = `/productsdb?page=${prodss.prevPage}&limit=${limit}`;
+                prevLink = `/products?page=${prodss.prevPage}&limit=${limit}`;
             } else {
-                prevLink = `/productsdb?page=${prodss.prevPage}&limit=${limit}&sort=${sort}`;
+                prevLink = `/products?page=${prodss.prevPage}&limit=${limit}&sort=${sort}`;
             }
         } else {
             prevLink = null;
@@ -167,22 +167,22 @@ router.get('/productsdb', async (req, res) => {
 
         if (prodss.hasNextPage) {
             if (!sort) {
-                nextLink = `/productsdb?page=${prodss.nextPage}&limit=${limit}`;
+                nextLink = `/products?page=${prodss.nextPage}&limit=${limit}`;
             } else {
-                nextLink = `/productsdb?page=${prodss.nextPage}&limit=${limit}&sort=${sort}`;
+                nextLink = `/products?page=${prodss.nextPage}&limit=${limit}&sort=${sort}`;
             }
         } else {
             nextLink = null;
         }
 
         if (!sort && !limit) {
-            pageLink = `/productsdb?page=${prodss.page}`;
+            pageLink = `/products?page=${prodss.page}`;
         } else if (limit && !sort) {
-            pageLink = `/productsdb?page=${prodss.page}&limit=${limit}`;
+            pageLink = `/products?page=${prodss.page}&limit=${limit}`;
         } else if (sort && !limit) {
-            pageLink = `/productsdb?page=${prodss.page}&sort=${sort}`;
+            pageLink = `/products?page=${prodss.page}&sort=${sort}`;
         } else if (sort && limit) {
-            pageLink = `/productsdb?page=${prodss.page}&limit=${limit}&sort=${sort}`;
+            pageLink = `/products?page=${prodss.page}&limit=${limit}&sort=${sort}`;
         }
 
         if (prodss.nextPage == prodss.totalPages || !prodss.nextPage) {
@@ -233,7 +233,7 @@ router.get('/productsdb', async (req, res) => {
 })
 
 
-router.get('/realtimeproductsdb', async (req, res) => {
+router.get('/realtimeproducts', async (req, res) => {
     console.log("\r\nentro get");
 
     let titulo = "Listado de Productos en tiempo Real";
@@ -360,9 +360,9 @@ router.get('/realtimeproductsdb', async (req, res) => {
 
         if (prodss.hasPrevPage) {
             if (!sort) {
-                prevLink = `/realtimeproductsdb?page=${prodss.prevPage}&limit=${limit}`;
+                prevLink = `/realtimeproducts?page=${prodss.prevPage}&limit=${limit}`;
             } else {
-                prevLink = `/realtimeproductsdb?page=${prodss.prevPage}&limit=${limit}&sort=${sort}`;
+                prevLink = `/realtimeproducts?page=${prodss.prevPage}&limit=${limit}&sort=${sort}`;
             }
         } else {
             prevLink = null;
@@ -370,22 +370,22 @@ router.get('/realtimeproductsdb', async (req, res) => {
 
         if (prodss.hasNextPage) {
             if (!sort) {
-                nextLink = `/realtimeproductsdb?page=${prodss.nextPage}&limit=${limit}`;
+                nextLink = `/realtimeproducts?page=${prodss.nextPage}&limit=${limit}`;
             } else {
-                nextLink = `/realtimeproductsdb?page=${prodss.nextPage}&limit=${limit}&sort=${sort}`;
+                nextLink = `/realtimeproducts?page=${prodss.nextPage}&limit=${limit}&sort=${sort}`;
             }
         } else {
             nextLink = null;
         }
 
         if (!sort && !limit) {
-            pageLink = `/realtimeproductsdb?page=${prodss.page}`;
+            pageLink = `/realtimeproducts?page=${prodss.page}`;
         } else if (limit && !sort) {
-            pageLink = `/realtimeproductsdb?page=${prodss.page}&limit=${limit}`;
+            pageLink = `/realtimeproducts?page=${prodss.page}&limit=${limit}`;
         } else if (sort && !limit) {
-            pageLink = `/realtimeproductsdb?page=${prodss.page}&sort=${sort}`;
+            pageLink = `/realtimeproducts?page=${prodss.page}&sort=${sort}`;
         } else if (sort && limit) {
-            pageLink = `/realtimeproductsdb?page=${prodss.page}&limit=${limit}&sort=${sort}`;
+            pageLink = `/realtimeproducts?page=${prodss.page}&limit=${limit}&sort=${sort}`;
         }
 
         console.log("... ...");
@@ -410,33 +410,33 @@ router.get('/realtimeproductsdb', async (req, res) => {
             pageLink: pageLink,
             hasPrevPage: prodss.hasPrevPage,
             hasNextPage: prodss.hasNextPage,
-            //prevLink: prodss.hasPrevPage ? `/realtimeproductsdb?page=${prodss.prevPage}&limit=${limit}` : null,
+            //prevLink: prodss.hasPrevPage ? `/realtimeproducts?page=${prodss.prevPage}&limit=${limit}` : null,
             prevLink: prevLink,
-            //nextLink: prodss.hasNextPage ? `/realtimeproductsdb?page=${prodss.nextPage}&limit=${limit}` : null,
+            //nextLink: prodss.hasNextPage ? `/realtimeproducts?page=${prodss.nextPage}&limit=${limit}` : null,
             nextLink: nextLink,
             hasLastPage: showLastPage
         };
         console.log("... ... ...");
 
         /*
-        http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=category:desc,price:desc
-        http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=category:desc,price:desc
-        http://localhost:8080/realtimeproductsdb?page=2&limit=7&sort=category:desc,price:desc
+        http://localhost:8080/realtimeproducts?page=1&limit=7&sort=category:desc,price:desc
+        http://localhost:8080/realtimeproducts?page=1&limit=7&sort=category:desc,price:desc
+        http://localhost:8080/realtimeproducts?page=2&limit=7&sort=category:desc,price:desc
 
-        http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=title
-        http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=price:asc
-http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=title:asc,price:asc
+        http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title
+        http://localhost:8080/realtimeproducts?page=1&limit=7&sort=price:asc
+http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title:asc,price:asc
 
 
-    http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=category:desc,price:desc
-    http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=category:desc,price:desc&query=infusion&type=category
-            http://localhost:8080/realtimeproductsdb?page=1
-            http://localhost:8080/realtimeproductsdb?page=2
-            http://localhost:8080/realtimeproductsdb?page=1&limit=7
-            http://localhost:8080/realtimeproductsdb?page=2&limit=7
-            http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=category:desc,price:desc
-            http://localhost:8080/realtimeproductsdb?page=2&limit=7&sort=category:desc,price:desc
-            http://localhost:8080/realtimeproductsdb?query=infusion&type=category&limit=2
+    http://localhost:8080/realtimeproducts?page=1&limit=7&sort=category:desc,price:desc
+    http://localhost:8080/realtimeproducts?page=1&limit=7&sort=category:desc,price:desc&query=infusion&type=category
+            http://localhost:8080/realtimeproducts?page=1
+            http://localhost:8080/realtimeproducts?page=2
+            http://localhost:8080/realtimeproducts?page=1&limit=7
+            http://localhost:8080/realtimeproducts?page=2&limit=7
+            http://localhost:8080/realtimeproducts?page=1&limit=7&sort=category:desc,price:desc
+            http://localhost:8080/realtimeproducts?page=2&limit=7&sort=category:desc,price:desc
+            http://localhost:8080/realtimeproducts?query=infusion&type=category&limit=2
 
 
 
@@ -485,6 +485,8 @@ http://localhost:8080/realtimeproductsdb?page=1&limit=7&sort=title:asc,price:asc
 
 // Fin DB
 
+// FS
+/*
 router.get('/products', async (req, res) => {
 
     let { detalle } = req.query;
@@ -542,7 +544,7 @@ router.get('/realtimeproducts', async (req, res) => {
         prodss
     });
 });
-
+*/
 module.exports = { router };
 
 

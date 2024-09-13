@@ -47,21 +47,21 @@
     </div>
     <div class="paginate" id="paginate">
         {{#if dataObjectPaginate.hasPrevPage}}
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.prevPage}}"
+        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.prevPage}}"
             class="pagPrev">{{dataObjectPaginate.prevPage}}</a>
         {{else}}
         {{/if}}
 
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.currentPage}}"
+        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.currentPage}}"
             class="pagCurrent">{{dataObjectPaginate.currentPage}}</a>
 
         {{#if dataObjectPaginate.hasNextPage}}
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.nextPage}}"
+        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.nextPage}}"
             class="pagNext">{{dataObjectPaginate.nextPage}}</a>
         {{else}}
         {{/if}}
 
-        <a href="http://localhost:8080/realtimeproductsdb?page={{dataObjectPaginate.totalPages}}"
+        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.totalPages}}"
             class="pagLast">{{dataObjectPaginate.totalPages}}</a>
 
     </div>
