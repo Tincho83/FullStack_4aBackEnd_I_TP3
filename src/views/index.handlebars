@@ -1,5 +1,8 @@
 <p id="DateLastAccess"></p>
 <h1>{{titulo}}</h1>
+    <div class="ItemCardFooter">
+        <button onclick="ViewCart()" id="btnViewCart">View Cart</button>        
+    </div>
 
 <div style="display: flex;">
     <div id="product-list">
@@ -35,7 +38,7 @@
                 </div>
                 <div class="ItemCardFooter">
                     <button onclick="ViewProduct('{{_id}}')" id="btnViewProduct">View Product</button>
-                    <button onclick="AddProducttoCart('{{_id}}')" id="btnAddProdToCart">Add Product to Cart</button>                    
+                    <button onclick="AddProducttoCart('{{_id}}')" id="btnAddProdToCart">Add Product to Cart</button>
                 </div>
             </div>
         </div>
@@ -86,6 +89,11 @@
             <input type="submit" id="btnSubmit" value="Add Product">
         </form>
     </div>
+
+
+
+
+
 </div>
 
 

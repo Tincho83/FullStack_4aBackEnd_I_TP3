@@ -1,22 +1,17 @@
 <p id="DateLastAccess"></p>
-<h1>{{titulo}}</h1>
+<h1>{{titulo}} {{cartId}}</h1>
+<div class="ItemCardFooter">
+    <button onclick="BackToProducts()" id="btnBackToProducts">Back to Products</button>
+</div>
 
 <div style="display: flex;">
     <div id="product-list">
-
-        {{#each products}}
-        <div class="divCardItem" data-id="{{_id}}">
+        {{#each prodss}}
+        <div class="divCardItem" data-id="{{product._id}}">
             <div class="CardItem">
-                <div class="diviCartItem">
-                    {{#if status}}
-                    <p>Disponible: Si</p>
-                    {{else}}
-                    <p>Disponible: No</p>
-                    {{/if }}
-                </div>
                 <div class="Header">
-                    {{#if thumbnails.length}}
-                    {{#each thumbnails}}
+                    {{#if product.thumbnails.length}}
+                    {{#each product.thumbnails}}
                     <img src="{{urlmain}}" alt="{{title}}" class="ImgPic" />
                     {{/each}}
                     {{else}}
@@ -24,77 +19,23 @@
                         alt="Sin Imagen" class="ImgPic" />
                     {{/if}}
                     <div class="ItemData">
-                        <p>{{category}}</p>
-                        <h3 style="font-size: 1.5rem;">{{title}} - {{code}}</h3>
-                        {{#if detalle}}
-                        <p>{{description}}</p>
-                        {{else}}
-                        {{/if}}
-                        <p class="ItemDataPrice">Price: $ {{price}}</p>
+                        <p>{{product.category}}</p>
+                        <h3 style="font-size: 1.5rem;">{{product.title}} - {{product.code}}</h3>
+                        <p>{{product.description}}</p>
+                        <p class="ItemDataPrice">Price: $ {{product.price}}</p>
+                        <p class="ItemDataQty">Quantity: {{quantity}}</p>
                     </div>
                 </div>
                 <div class="ItemCardFooter">
-                    <button onclick="ViewProduct('{{_id}}')" id="btnViewProduct">View Product</button>
-                    <button onclick="AddProducttoCart('{{_id}}')" id="btnAddProdToCart">Add Product to Cart</button>
-                    <button onclick="DeleteProduct('{{_id}}')" id="btnDelete">Delete Product</button>
-                    <button
-                        onclick="ModifyProduct('{{_id}}', '{{title}}', '{{description}}', '{{code}}', {{price}}, {{stock}}, '{{category}}')"
-                        id="btnModify">Modify Product</button>
+                    <button onclick="DeleteProduct('{{product._id}}', '{{../cartId}}')" id="btnDelete">Delete
+                        Product</button>
                 </div>
             </div>
         </div>
         {{/each}}
-    </div>
-    <div class="paginate" id="paginate">
-        {{#if dataObjectPaginate.hasPrevPage}}
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.prevPage}}"
-            class="pagPrev">{{dataObjectPaginate.prevPage}}</a>
-        {{else}}
-        {{/if}}
-
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.currentPage}}"
-            class="pagCurrent">{{dataObjectPaginate.currentPage}}</a>
-
-        {{#if dataObjectPaginate.hasNextPage}}
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.nextPage}}"
-            class="pagNext">{{dataObjectPaginate.nextPage}}</a>
-        {{else}}
-        {{/if}}
-
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObjectPaginate.totalPages}}"
-            class="pagLast">{{dataObjectPaginate.totalPages}}</a>
-
-    </div>
-    <hr>
-
-    <div class="divFormProd">
-        <form action="/api/products" method="post" id="add-product-form">
-            <input type="hidden" id="productId" name="productId" />
-            <label>Title</label>
-            <input type="text" name="title" id="title" placeholder="Title" required>
-            <br>
-            <label>Description</label>
-            <input type="text" name="description" id="description" placeholder="Description" required>
-            <br>
-            <label>Code</label>
-            <input type="text" name="code" id="code" placeholder="Product Code" required>
-            <br>
-            <label>Price</label>
-            <input type="number" name="price" id="price" placeholder="Price" required>
-            <br>
-            <label>Stock</label>
-            <input type="number" name="stock" id="stock" placeholder="Stock Quantity" required>
-            <br>
-            <label>Category</label>
-            <input type="text" name="category" id="category" placeholder="Category Name" required>
-            <br>
-            <input type="submit" id="btnSubmit" value="Add Product">
-        </form>
+        <p class="ItemDataSubtotal">Subtotal: $ {{subtotal}}</p>
     </div>
 </div>
 
-
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script defer src="js/realtimeproducts.js"></script>
+<script defer src="../js/cart.js"></script>

@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 
             if (prodss.docs.length === 0) {
                 dataObject = {
-                    status: 'error',
+                    status: 'Sin Resultados.',
                     message: 'No se encontraron productos que coincidan con la búsqueda.'
                 };
 
@@ -171,6 +171,12 @@ router.get('/', async (req, res) => {
 
     } catch (error) {
         console.log(error);
+
+        dataObject = {
+            status: 'error',
+            message: 'Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.'
+        };
+
         res.setHeader('Content-type', 'application/json');
         return res.status(500).json({
             error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
@@ -197,7 +203,7 @@ router.get('/:id', async (req, res) => {
         let product = await ProductsManagerMongoDB.getProductsByDBMongo({ _id: id });
         if (!product) {
             res.setHeader('Content-type', 'application/json');
-            return res.status(400).json({ error: `No existen usuarios con el id: ${id}` });
+            return res.status(400).json({ error: `No existen productos con el id: ${id}` });
         }
         console.log(product);
         res.setHeader('Content-type', 'application/json');
@@ -270,12 +276,6 @@ router.put('/:id', async (req, res) => {
     let prodToModify = req.body;
     console.log("con body:", prodToModify);
 
-    /*
-    if (!prodToModify.title || !prodToModify.description || !prodToModify.code || !prodToModify.price || !prodToModify.stock || !prodToModify.category) {
-        res.setHeader('Content-type', 'application/json');
-        return res.send({ status: "error", error: "Incomplete values" })
-    }
-*/
     //let existingProduct = await ProductsModel.findOne({ id: prodToModify.id });
     let existingProduct = await ProductsModel.findOne({ id: id });
     console.log("Producto existente en DB? ", existingProduct);
@@ -313,30 +313,6 @@ router.put('/:id', async (req, res) => {
             detalle: `${error.message}`
         });
     }
-
-
-
-    //let result = await ProductsModel.updateOne({ _id: prodid });
-    //let result = await ProductsModel.updateOne({ id: prodid });
-    //return res.send({ status: "sucess", payload: result })
-
-    /*
-        try {
-            let result = await ProductsModel.updateOne(
-                { id: prodid },
-                { $set: prodToModify }
-            );
-            if (result.modifiedCount > 0) {
-                return res.send({ status: "success", payload: result });
-            } else {
-                return res.send({ status: "error", error: "No document found with the provided ID" });
-            }
-        } catch (error) {
-            return res.send({ status: "error", error: error.message });
-        }
-    */
-
-
 })
 
 router.delete('/:id', async (req, res) => {

@@ -68,7 +68,10 @@ Con base en nuestra implementación actual de productos, modificar el método GET 
 
 
 [x] Se deberá poder buscar productos por categoría o por disponibilidad, y se deberá poder realizar un ordenamiento de estos productos de manera ascendente o descendente por precio.
-	postman:	http://localhost:8080/api/products?type=category&query=infusion				http://localhost:8080/api/products?type=status&query=true
+	postman:	categoría: 	http://localhost:8080/api/products?type=category&query=infusion				disponibilidad:		http://localhost:8080/api/products?type=status&query=true
+	postman:	categoría: 	http://localhost:8080/api/products?type=category&query=infusion&sort=price:asc		disponibilidad:		http://localhost:8080/api/products?type=status&query=true&sort=price:asc
+	postman:	categoría: 	http://localhost:8080/api/products?type=category&query=infusion&sort=price:desc		disponibilidad:		http://localhost:8080/api/products?type=status&query=true&sort=price:desc
+	postman:	stock:		http://localhost:8080/api/products?type=stock&query=7&sort=price:desc
 	url web:	http://localhost:8080/realtimeproducts?type=category&query=infusion&limit=2		http://localhost:8080/realtimeproducts?type=status&query=true&limit=20
 	url web:	http://localhost:8080/products?type=category&query=infusion&limit=20			http://localhost:8080/realtimeproducts?type=status&query=true&limit=2
 
@@ -110,6 +113,6 @@ carts	 Delete	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c
 [?] Llevar a una nueva vista con el producto seleccionado con su descripción completa, detalles de precio, categoría, etc. Además de un botón para agregar al carrito.
     Sugerencia de la ruta: “/products/:pid”. 
 
-[?] Contar con el botón de “agregar al carrito” directamente, sin necesidad de abrir una página adicional con los detalles del producto.
+[x] Contar con el botón de “agregar al carrito” directamente, sin necesidad de abrir una página adicional con los detalles del producto.
 
-[?] Además, agregar una vista en ‘/carts/:cid (cartId) para visualizar un carrito específico, donde se deberán listar SOLO los productos que pertenezcan a dicho carrito.
+[x] Además, agregar una vista en ‘/carts/:cid (cartId) para visualizar un carrito específico, donde se deberán listar SOLO los productos que pertenezcan a dicho carrito.

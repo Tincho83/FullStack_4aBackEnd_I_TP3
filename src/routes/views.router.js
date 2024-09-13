@@ -2,6 +2,8 @@ const { Router } = require("express");
 const { isValidObjectId } = require("mongoose");
 const ProductsManagerMongoDB = require("../dao/db/ProductsManagerMongoDB.js");
 const ProductsManager = require("../dao/filesystem/ProductsManager.js");
+const CartsManager = require("../dao/filesystem/CartsManager.js");
+const CartsManagerMongoDB = require("../dao/db/CartsManagerMongoDB.js");
 
 const router = Router();
 
@@ -13,24 +15,38 @@ router.get("/", (req, res) => {
 });
 
 // Para DB
-router.get('/carts/:cid', async (req, res) => {
+router.get('/products/:pid', async (req, res) => {
 
-    let { detalle } = req.query;
-    if (detalle) {
-        console.log(detalle);
-    }
+    console.log("entro en carrito");
 
-    let titulo = "Listado de Productos del Carrito";
-    let prodss;
+    const { pid } = req.params;
 
-    let { page } = req.query;
-    if (!page || isNaN(Number(page))) {
-        page = 1;
+    if (!isValidObjectId(pid)) {
+        res.setHeader('Content-type', 'application/json');
+        return res.status(400).json({ error: 'ID de carrito no válido.' });
     }
 
     try {
-        //prodss = await ProductsManagerMongoDB.getProductsDBMongo();
-        prodss = await ProductsManagerMongoDB.getProductsDBMongoPaginate(page);
+        // Obtén los productos con el ID pid
+        let product = await ProductsManagerMongoDB.getProductsByDBMongo({ _id: pid });
+        if (!product) {
+            res.setHeader('Content-type', 'application/json');
+            return res.status(400).json({ error: `No existen productos con el id: ${pid}` });
+        }
+        console.log(product);
+        
+        //res.setHeader('Content-type', 'application/json');
+        //return res.status(200).json({ product })
+
+        let titulo = "Detalle del Producto";
+        //const prod = cart.products;  // Suponiendo que el carrito tiene un array de productos
+
+        res.setHeader('Content-type', 'text/html');
+        res.status(200).render("product", {
+            titulo,           
+            product
+        });
+
     } catch (error) {
         console.log(error);
         res.setHeader('Content-type', 'application/json');
@@ -39,14 +55,61 @@ router.get('/carts/:cid', async (req, res) => {
             detalle: `${error.message}`
         });
     }
+})
 
 
-    res.setHeader('Content-type', 'text/html');
-    res.status(200).render("carts", {
-        detalle,
-        titulo,
-        prodss
-    });
+router.get('/carts/:cid', async (req, res) => {
+
+    console.log("entro en carrito");
+
+    const { cid } = req.params;
+
+    if (!isValidObjectId(cid)) {
+        res.setHeader('Content-type', 'application/json');
+        return res.status(400).json({ error: 'ID de carrito no válido.' });
+    }
+
+    try {
+        // Obtén los productos del carrito con el ID cid
+        const cart = await CartsManagerMongoDB.getCartByDBMongo(cid);
+
+        if (!cart) {
+            res.setHeader('Content-type', 'application/json');
+            return res.status(404).json({ error: 'Carrito no encontrado.' });
+        }
+
+        let titulo = "Listado de Productos del Carrito";
+        //let prodss;
+        const prodss = cart.products;  // Suponiendo que el carrito tiene un array de productos
+
+        console.log(prodss);
+
+        let subtotal = 0;
+        let total = 0;
+
+        prodss.forEach(p => {
+            subtotal += p.product.price * p.quantity;
+        });
+
+        console.log(subtotal);
+        //subtotal = prodss.product.price * prodss.quantity;
+
+        res.setHeader('Content-type', 'text/html');
+        res.status(200).render("carts", {
+            titulo,
+            subtotal,
+            prodss,
+            cartId: cid
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.setHeader('Content-type', 'application/json');
+        return res.status(500).json({
+            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
+            detalle: `${error.message}`
+        });
+    }
 })
 
 router.get('/products', async (req, res) => {
@@ -485,66 +548,6 @@ http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title:asc,price:asc
 
 // Fin DB
 
-// FS
-/*
-router.get('/products', async (req, res) => {
-
-    let { detalle } = req.query;
-    if (detalle) {
-        console.log(detalle);
-    }
-
-    let titulo = "Listado de Productos";
-    let prodss;
-
-    try {
-        prodss = await ProductsManager.getProducts();
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
-            detalle: `${error.message}`
-        });
-    }
-
-
-    res.setHeader('Content-type', 'text/html');
-    res.status(200).render("index", {
-        detalle,
-        titulo,
-        prodss
-    });
-})
-
-router.get('/realtimeproducts', async (req, res) => {
-
-    let { detalle } = req.query;
-    if (detalle) {
-        console.log(detalle);
-    }
-
-    let titulo = "Listado de Productos en tiempo Real";
-    let prodss;
-
-    try {
-        prodss = await ProductsManager.getProducts();
-    } catch (error) {
-        console.log(error);
-        res.setHeader('Content-type', 'application/json');
-        return res.status(500).json({
-            error: `Error inesperado en el servidor, vuelva a intentar mas tarde o contacte con el administrador.`,
-            detalle: `${error.message}`
-        });
-    }
-
-    res.setHeader('Content-type', 'text/html');
-    res.status(200).render("realTimeProducts", {
-        titulo,
-        prodss
-    });
-});
-*/
 module.exports = { router };
 
 
