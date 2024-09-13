@@ -252,3 +252,9 @@ hr {
     text-decoration: underline;
     /* Subrayado al pasar el ratón sobre el enlace */
 }
+
+.ItemDataSubtotal {
+    font-size: 2.0rem;
+    display: block;
+    margin-bottom: 8px;
+}

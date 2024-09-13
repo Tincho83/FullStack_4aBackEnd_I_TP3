@@ -1,7 +1,9 @@
 <h1>{{titulo}}</h1>
 <div class="ItemCardFooter">
     <button onclick="BackToProducts()" id="btnBackToProducts">Back to Products</button>
+    <button onclick="ViewCart()" id="btnViewCart">View Cart</button>
 </div>
+
 
 <div style="display: flex;">
     <div class="product-details" data-id="{{product._id}}">
@@ -25,7 +27,7 @@
                 <p><strong>Disponibilidad:</strong> {{#if product.status}}Disponible{{else}}No Disponible{{/if}}</p>
             </div>
             <div class="ItemCardFooter">
-                <button onclick="addToCart('{{product._id}}')" class="btn-add-to-cart">Agregar al Carrito</button>
+                <button onclick="AddProducttoCart('{{product._id}}')" id="btnAddProdToCart">Add Product to Cart</button>
             </div>
         </div>
     </div>
@@ -34,4 +36,4 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script defer src="js/product.js"></script>
+<script defer src="../js/product.js"></script>

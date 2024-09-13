@@ -110,7 +110,7 @@ carts	 Delete	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c
 [x] Modificar la vista index.handlebars en el router de views ‘/products’, creada en la pre-entrega anterior, para visualizar todos los productos con su respectiva paginación.
     Además, cada producto mostrado puede resolverse de dos formas:
 
-[?] Llevar a una nueva vista con el producto seleccionado con su descripción completa, detalles de precio, categoría, etc. Además de un botón para agregar al carrito.
+[x] Llevar a una nueva vista con el producto seleccionado con su descripción completa, detalles de precio, categoría, etc. Además de un botón para agregar al carrito.
     Sugerencia de la ruta: “/products/:pid”. 
 
 [x] Contar con el botón de “agregar al carrito” directamente, sin necesidad de abrir una página adicional con los detalles del producto.
