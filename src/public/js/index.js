@@ -109,7 +109,7 @@ function ViewCart() {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No tienes un carrito activo.',
+            text: 'No tienes un carrito activo. Agrega un producto para crearlo.',
         });
         return;
     }

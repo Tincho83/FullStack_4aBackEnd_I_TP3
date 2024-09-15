@@ -277,7 +277,7 @@ router.put('/:id', async (req, res) => {
     console.log("con body:", prodToModify);
 
     //let existingProduct = await ProductsModel.findOne({ id: prodToModify.id });
-    let existingProduct = await ProductsModel.findOne({ id: id });
+    let existingProduct = await ProductsModel.findOne({ _id: id });
     console.log("Producto existente en DB? ", existingProduct);
     console.log("con params id:", id);
 
@@ -287,9 +287,18 @@ router.put('/:id', async (req, res) => {
         return res.send({ status: "error", error: "Duplicate ID found" });
     }
 
-    console.log("reemplazar");
+    // Comprobar si el código ya existe en otro producto
+    if (prodToModify.code) {
+        let productWithSameCode = await ProductsModel.findOne({ code: prodToModify.code, _id: { $ne: id } });
 
+        if (productWithSameCode) {
+            console.log("Producto con código duplicado encontrado:", productWithSameCode);
+            res.setHeader('Content-type', 'application/json');
+            return res.status(400).json({ error: `El código ${prodToModify.code} ya está en uso por otro producto.` });
+        }
+    }
 
+    console.log("actualizar prod...");
 
     try {
         let prodModified = await ProductsManagerMongoDB.updateProductDBMongo(id, prodToModify)
@@ -303,7 +312,7 @@ router.put('/:id', async (req, res) => {
         console.log("Evento *ProductoActualizado* emitido");
 
         res.setHeader('Content-type', 'application/json');
-        return res.status(200).json({ success: `producto actualizado id: ${id}, ${prodModified}` })
+        return res.status(200).json({ success: `producto actualizado id: ${id}` })
 
     } catch (error) {
         console.log(error);

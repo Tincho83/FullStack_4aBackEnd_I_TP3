@@ -1,5 +1,8 @@
 <p id="DateLastAccess"></p>
 <h1>{{titulo}}</h1>
+<div class="ItemCardFooter">
+    <button onclick="ViewCart()" id="btnViewCart">View Cart</button>
+</div>
 
 <div style="display: flex;">
     <div id="product-list">
@@ -45,25 +48,8 @@
         </div>
         {{/each}}
     </div>
-    <div class="paginate" id="paginate">
-        {{#if dataObject.hasPrevPage}}
-        <a href="http://localhost:8080{{dataObject.prevLink}}" class="pagPrev">{{dataObject.prevPage}}</a>
-        {{else}}
-        {{/if}}
+    
 
-        <a href="http://localhost:8080{{dataObject.pageLink}}" class="pagCurrent">{{dataObject.page}}</a>
-
-        {{#if dataObject.hasNextPage}}
-        <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
-        {{else}}
-        {{/if}}
-
-        {{#if dataObject.hasLastPage}}
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObject.totalPages}}"
-            class="pagLast">{{dataObject.totalPages}}</a>
-        {{else}}
-        {{/if}}
-    </div>
     <hr>
 
     <div class="divFormProd">
@@ -91,6 +77,26 @@
         </form>
     </div>
 </div>
+    <div class="paginate" id="paginate">
+        {{#if dataObject.hasPrevPage}}
+        <a href="http://localhost:8080{{dataObject.prevLink}}" class="pagPrev">{{dataObject.prevPage}}</a>
+        {{else}}
+        {{/if}}
+
+        <p class="pagCurrent">{{dataObject.page}}</p>
+        <!-- <a href="http://localhost:8080{{dataObject.pageLink}}" class="pagCurrent">{{dataObject.page}}</a> -->
+
+        {{#if dataObject.hasNextPage}}
+        <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
+        {{else}}
+        {{/if}}
+
+        {{#if dataObject.hasLastPage}}
+        <a href="http://localhost:8080/realtimeproducts?page={{dataObject.totalPages}}"
+            class="pagLast">{{dataObject.totalPages}}</a>
+        {{else}}
+        {{/if}}
+    </div>
 
 
 

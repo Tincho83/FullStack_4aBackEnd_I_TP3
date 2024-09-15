@@ -1,7 +1,22 @@
 const socket = io();
 
+let pFecha = document.getElementById("DateLastAccess");
+
+formatCurrentDate();
+
+function formatCurrentDate() {
+    const today = new Date();
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const formatter = new Intl.DateTimeFormat('en-GB', options);
+    const formattedDate = formatter.format(today);
+
+    pFecha.textContent = `Fecha de Último Acceso: ${formattedDate}`;
+}
+
 let addstatus = true;
 let divHora = document.getElementById("hhmm");
+
+
 
 const inputTitle = document.getElementById("title");
 const inputDescrip = document.getElementById("description");
@@ -14,11 +29,11 @@ const productListDiv = document.getElementById("product-list");
 
 const getProducts = async () => {
 
-    let res = await fetch(`/api/products/todos`);
+    let res = await fetch(`/api/products`);
     //let res = await fetch(`/realtimeproducts`);
     let data = await res.json();
     console.log("\r\nentro realtimeproducts.js");
-    console.log(`Se hencontraron ${data.products.docs.length} productos.`);
+    console.log(`Se encontraron ${data.products.docs.length} productos.`);
     console.log(data);
 
 
@@ -33,14 +48,14 @@ const getProducts = async () => {
         const FirstPage = document.createElement("a");
         FirstPage.textContent = `[1] `;
         FirstPage.className = "paginacionfirst";
-        FirstPage.href = `/api/products/todos?page=1`;
+        FirstPage.href = `/api/realtimeproducts?page=1`;
         paginateDiv.appendChild(FirstPage);
 
         if (data.products.nextPage) {
             const NextPage = document.createElement("a");
             NextPage.textContent = `[${data.products.nextPage}] `;
             NextPage.className = "paginacion";
-            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
             paginateDiv.appendChild(NextPage);
         } else {
 
@@ -50,7 +65,7 @@ const getProducts = async () => {
             const LastPage = document.createElement("a");
             LastPage.textContent = `[${data.products.totalPages}] `;
             LastPage.className = "paginacion";
-            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
             paginateDiv.appendChild(LastPage);
         }
 
@@ -60,7 +75,7 @@ const getProducts = async () => {
         const PrevPage = document.createElement("a");
         PrevPage.textContent = `[${prevpg}] `;
         PrevPage.className = "paginacionprev";
-        PrevPage.href = `/api/products/todos?page=1`;
+        PrevPage.href = `/api/realtimeproducts?page=1`;
         paginateDiv.appendChild(PrevPage);
     }
 
@@ -75,32 +90,32 @@ const getProducts = async () => {
             const FirstPage = document.createElement("a");
             FirstPage.textContent = ` [1] `;
             FirstPage.className = "paginacion";
-            FirstPage.href = `/api/products/todos?page=1`;
+            FirstPage.href = `/api/realtimeproducts?page=1`;
             document.body.append(FirstPage);
 
             const NextPage = document.createElement("a");
             NextPage.textContent = ` [${data.products.nextPage}] `;
             NextPage.className = "paginacion";
-            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
             document.body.append(NextPage);
 
             const LastPage = document.createElement("a");
             LastPage.textContent = ` [${data.products.totalPages}] `;
             LastPage.className = "paginacion";
-            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
             document.body.append(LastPage);
         }
         else {
             const FirstPage = document.createElement("a");
             FirstPage.textContent = ` [1] `;
             FirstPage.className = "paginacion";
-            FirstPage.href = `/api/products/todos?page=1`;
+            FirstPage.href = `/api/realtimeproducts?page=1`;
             document.body.append(FirstPage);
 
             const NextPage = document.createElement("a");
             NextPage.textContent = ` [${data.products.nextPage}] `;
             NextPage.className = "paginacion";
-            NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
             document.body.append(NextPage);
 
             otpg = Number(data.products.nextPage) + 1;
@@ -109,32 +124,32 @@ const getProducts = async () => {
             const OtNextPage = document.createElement("a");
             OtNextPage.textContent = ` [${otpg}] `;
             OtNextPage.className = "paginacion";
-            OtNextPage.href = `/api/products/todos?page=${otpg}`;
+            OtNextPage.href = `/api/realtimeproducts?page=${otpg}`;
             document.body.append(OtNextPage);
 
             const LastPage = document.createElement("a");
             LastPage.textContent = ` [${data.products.totalPages}] `;
             LastPage.className = "paginacion";
-            LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
             document.body.append(LastPage);
         }
     } else {
         const FirstPage = document.createElement("a");
         FirstPage.textContent = ` [1] `;
         FirstPage.className = "paginacion";
-        FirstPage.href = `/api/products/todos?page=1`;
+        FirstPage.href = `/api/realtimeproducts?page=1`;
         document.body.append(FirstPage);
 
         const NextPage = document.createElement("a");
         NextPage.textContent = ` [${data.products.nextPage}] `;
         NextPage.className = "paginacion";
-        NextPage.href = `/api/products/todos?page=${data.products.nextPage}`;
+        NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
         document.body.append(NextPage);
 
         const LastPage = document.createElement("a");
         LastPage.textContent = ` [${data.products.totalPages}] `;
         LastPage.className = "paginacion";
-        LastPage.href = `/api/products/todos?page=${data.products.totalPages}`;
+        LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
         document.body.append(LastPage);
     }
 
@@ -173,7 +188,7 @@ btnSubmit.addEventListener("click", async (e) => {
 
 
         try {
-            const response = await fetch(`/api/products/todos`, {
+            const response = await fetch(`/api/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -269,7 +284,7 @@ function ModifyProduct(_id, title, description, code, price, stock, category) {
             }
 
 
-            fetch(`/api/products/todos/${_id}`, {
+            fetch(`/api/products/${_id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -305,7 +320,7 @@ function ModifyProduct(_id, title, description, code, price, stock, category) {
 
 function DeleteProduct(productId) {
     if (confirm(`Deseas borrar el producto id ${productId}?`)) {
-        fetch(`/api/products/todos/${productId}`, {
+        fetch(`/api/products/${productId}`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -433,15 +448,121 @@ function eliminarProductoDelDOM(productId) {
     }
 }
 
-let pFecha = document.getElementById("DateLastAccess");
+// Función para agregar producto al carrito
+async function AddProducttoCart(productId) {
 
-formatCurrentDate();
+    let cartId = localStorage.getItem("IdCart");
 
-function formatCurrentDate() {
-    const today = new Date();
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    const formatter = new Intl.DateTimeFormat('en-GB', options);
-    const formattedDate = formatter.format(today);
+    if (!cartId || cartId == null || cartId == undefined || cartId == "undefined") {
+        // Si no hay carrito en localStorage, creamos uno nuevo
+        try {
+            const response = await fetch('/api/carts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Error al crear el carrito');
+            }
 
-    pFecha.textContent = `Fecha de Último Acceso: ${formattedDate}`;
+            const newCart = await response.json();
+            cartId = newCart.cartnuevo._id;
+
+            // Guardamos el nuevo carrito en localStorage
+            localStorage.setItem("IdCart", cartId);
+        } catch (error) {
+            console.error("Error al crear un nuevo carrito: ", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo crear un carrito nuevo.'
+            });
+            return;
+        }
+    }
+
+    // Validar los ID
+    if (!isValidObjectId(productId)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'ID de producto no válido.'
+        });
+        res.setHeader('Content-type', 'application/json');
+        return res.status(400).json({ error: `ID(s) no válidos. Verifique los Is's ingresados.` });
+    }
+
+    if (cartId && !isValidObjectId(cartId)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'ID de carrito no válido.'
+        });
+        res.setHeader('Content-type', 'application/json');
+        return res.status(400).json({ error: `ID(s) no válidos. Verifique los Is's ingresados.` });
+    }
+    console.log(`Carrito ID: ${cartId}, Producto ID: ${productId}`);
+
+    try {
+        const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+            //method: 'PUT',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            //body: JSON.stringify({ quantity })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            Swal.fire({
+                icon: 'success',
+                title: 'Producto agregado al carrito',
+                text: `El producto ha sido agregado correctamente`,
+            });
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `No se pudo agregar el producto al carrito: ${errorData.error}`,
+            });
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al agregar el producto al carrito',
+        });
+    }
 }
+
+// Función para ver el carrito
+function ViewCart() {
+    let cartId = localStorage.getItem("IdCart");
+
+    if (!cartId || cartId == null || cartId == undefined || cartId == "undefined") {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No tienes un carrito activo. Agrega un producto para crearlo.',
+        });
+        return;
+    }
+
+    // Redirigir a la página del carrito
+    window.location.href = `/carts/${cartId}`;
+}
+
+// Función para ver el carrito
+function ViewProduct(pid) {
+
+    // Redirigir a la página del carrito
+    window.location.href = `/products/${pid}`;
+}
+
+function isValidObjectId(id) {
+    return /^[a-f\d]{24}$/i.test(id);
+}
+

@@ -1,12 +1,12 @@
 Profesionalizando la BD
 
 Objetivos generales
-[_] Contarás con Mongo como sistema de persistencia principal.
-[_] Tendrás definidos todos los endpoints para poder trabajar con productos y carritos.
+[x] Contarás con Mongo como sistema de persistencia principal.
+[x] Tendrás definidos todos los endpoints para poder trabajar con productos y carritos.
 
 Objetivos específicos
-[_] Profesionalizar las consultas de productos con filtros, paginación y ordenamientos
-[_] Profesionalizar la gestión de carrito para implementar los últimos conceptos vistos.
+[x] Profesionalizar las consultas de productos con filtros, paginación y ordenamientos
+[x] Profesionalizar la gestión de carrito para implementar los últimos conceptos vistos.
 
 https://plataforma-beta.coderhouse.com/cursos/70140/programacion-backend-desarrollo-avanzado-de-backend/entregas/66031cd0a073380019132b89
 
@@ -14,9 +14,9 @@ Formato
 [x] Link al repositorio de Github, sin la carpeta de node_modules
 
 Sugerencias
-[_] Permitir comentarios en el archivo
-[_] La lógica del negocio que ya tienes hecha no debería cambiar, sólo su persistencia.
-[_] Los nuevos endpoints deben seguir la misma estructura y lógica que hemos seguido.
+[x] Permitir comentarios en el archivo
+[x] La lógica del negocio que ya tienes hecha no debería cambiar, sólo su persistencia.
+[x] Los nuevos endpoints deben seguir la misma estructura y lógica que hemos seguido.
 
 
 Se debe entregar:

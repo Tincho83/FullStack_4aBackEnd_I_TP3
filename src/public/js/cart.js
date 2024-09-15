@@ -38,3 +38,10 @@ function updateSubtotal() {
     });
     document.querySelector('.ItemDataSubtotal').textContent = `Subtotal: $ ${subtotal}`;
 }
+
+// Función para ver el carrito
+function ViewProduct(pid) {
+
+    // Redirigir a la página del carrito
+    window.location.href = `/products/${pid}`;
+}

@@ -230,7 +230,7 @@ hr {
     display: flex;
     justify-content: center;
     /* Centra horizontalmente los elementos */
-    margin-top: 20px;
+    margin-top: 0px;
     /* Espacio superior opcional */
 
     align-items: center;
@@ -245,7 +245,7 @@ hr {
     /* Elimina el subrayado */
     color: #007bff;
     /* Color del texto */
-    font-size: x-large;
+    font-size: xx-large;
 }
 
 .paginate a:hover {
@@ -257,4 +257,14 @@ hr {
     font-size: 2.0rem;
     display: block;
     margin-bottom: 8px;
+}
+
+.pagCurrent {
+    margin: 0 5px;
+    /* Espacio entre los enlaces */
+    text-decoration: none;
+    /* Elimina el subrayado */
+    color: #ff0d00;
+    /* Color del texto */
+    font-size: xx-large;
 }
