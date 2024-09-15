@@ -58,13 +58,13 @@ const serverHTTP = app.listen(PORT, () => console.log(`
 
 serverSocket = new Server(serverHTTP);
 
+// Emision de Fecha y Hora
 setInterval(() => {
     let horahhmmss = moment().format('DD/MM/yyyy hh:mm:ss A');
-
     serverSocket.emit("HoraServidor", horahhmmss);
 }, 500);
 
-
+// Funcion para cada cliente que se conecta
 serverSocket.on('connection', (socket) => {
 
     let dato;
@@ -77,5 +77,5 @@ serverSocket.on('connection', (socket) => {
     });
 });
 
-
+// Funcion para conectarse a la BBDD.
 connDB();

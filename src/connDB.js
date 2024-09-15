@@ -1,6 +1,7 @@
 const { mongoose } = require("mongoose");
 const { config } = require("./config/config.js");
 
+//Funcion de conexion a MongoDB
 const connDB = async () => {
     try {
         await mongoose.connect(

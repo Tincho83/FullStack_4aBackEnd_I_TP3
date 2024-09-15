@@ -1,5 +1,6 @@
 const { ProductsModel } = require("../models/ProductsModel");
 
+// Manager para la BBSS de products
 class ProductsManagerMongoDB {
 
     static async getProductsDBMongo() {

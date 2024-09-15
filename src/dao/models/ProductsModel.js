@@ -2,11 +2,12 @@ const { mongoose } = require("mongoose");
 const { config } = require("../../config/config");
 const  paginate = require("mongoose-paginate-v2");
 
+// coleccion de products
 const productsColl = config.MONGO_COLLPRODNAME;
 
+// esquema para products
 const productsSchema = new mongoose.Schema(
     {
-        //id: { type: Number, required: true, unique: true },
         title: { type: String, required: true },
         description: { type: String, required: true },
         code: { type: String, required: true, unique: true },
@@ -19,10 +20,10 @@ const productsSchema = new mongoose.Schema(
     {
         timestamps: true,
         strict: false,
-        //collection: config.MONGO_COLLPRODNAME,
     }    
 )
 
+// plugin para usar paginate
 productsSchema.plugin(paginate);
 
 const ProductsModel = mongoose.model(

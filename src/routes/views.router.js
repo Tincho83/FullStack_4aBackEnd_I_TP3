@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
     res.status(200).render("home", { titulo });
 });
 
-// Para DB
+// EndPoints para products
 router.get('/products/:pid', async (req, res) => {
 
     console.log("entro en carrito");
