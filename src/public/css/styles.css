@@ -268,3 +268,16 @@ hr {
     /* Color del texto */
     font-size: xx-large;
 }
+
+.product-container{
+    display: flex;
+    height: auto;
+    width: auto;
+
+}
+
+.product-details{
+    height: auto;
+    width: auto;
+
+}

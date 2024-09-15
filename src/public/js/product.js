@@ -1,4 +1,4 @@
-// Función para agregar producto al carrito
+// Funcion para agregar producto al carrito
 async function AddProducttoCart(productId) {
 
     let cartId = localStorage.getItem("IdCart");
@@ -52,16 +52,14 @@ async function AddProducttoCart(productId) {
         res.setHeader('Content-type', 'application/json');
         return res.status(400).json({ error: `ID(s) no válidos. Verifique los Is's ingresados.` });
     }
-    console.log(`Carrito ID: ${cartId}, Producto ID: ${productId}`);
+    //console.log(`Carrito ID: ${cartId}, Producto ID: ${productId}`);
 
     try {
-        const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
-            //method: 'PUT',
+        const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {            
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            //body: JSON.stringify({ quantity })
+            },            
         });
 
         if (response.ok) {
@@ -88,45 +86,17 @@ async function AddProducttoCart(productId) {
     }
 }
 
-
-
-
-
-function addToCart(productId) {
-
-    const cartId = 1; // Reemplaza con el ID del carrito correspondiente
-    fetch(`/${cartId}/product/${productId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('Error:', data.error);
-            } else {
-                console.log('Producto agregado al carrito:', data);
-                alert('Producto agregado al carrito');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-
-    // Lógica para agregar el producto al carrito
-    console.log(`Producto ${productId} agregado al carrito`);
-}
-
+// Funcion para volver a la pagina de productos
 function BackToProducts() {
     window.location.href = "/products";
 }
 
+// Funcion para validar MongoDB id, usando expresion regular
 function isValidObjectId(id) {
     return /^[a-f\d]{24}$/i.test(id);
 }
 
-// Función para ver el carrito
+// Funcion para ver el carrito
 function ViewCart() {
     let cartId = localStorage.getItem("IdCart");
 
@@ -139,6 +109,5 @@ function ViewCart() {
         return;
     }
 
-    // Redirigir a la página del carrito
     window.location.href = `/carts/${cartId}`;
 }

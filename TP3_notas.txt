@@ -38,15 +38,17 @@ Con base en nuestra implementación actual de productos, modificar el método GET 
 
 
 [x] query, el tipo de elemento que quiero buscar (es decir, qué filtro aplicar), en caso de no recibir query, realizar la búsqueda general.
-	postman:	http://localhost:8080/api/products?query=infusion&type=category		http://localhost:8080/api/products
-	url web:	http://localhost:8080/realtimeproducts?query=infusion&type=category 	http://localhost:8080/realtimeproducts
-	url web:	http://localhost:8080/products?query=infusion&type=category 		http://localhost:8080/products
+	postman:	http://localhost:8080/api/products?query=leche&type=category		http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?query=leche&type=category 	http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?query=leche&type=category 		http://localhost:8080/products
 
 
 [x] sort: asc/desc, para realizar ordenamiento ascendente o descendente por precio, en caso de no recibir sort, no realizar ningún ordenamiento.
-	postman:	http://localhost:8080/api/products?sort=title:category,price:asc			http://localhost:8080/api/products
-	url web:	http://localhost:8080/realtimeproducts?page=1&limit=7&sort=title:asc,price:asc		http://localhost:8080/realtimeproducts
-	url web:	http://localhost:8080/products?page=1&limit=7&sort=title:asc,price:asc			http://localhost:8080/products	
+	postman:	http://localhost:8080/api/products?sort=title:asc,price:asc						http://localhost:8080/api/products
+	url web:	http://localhost:8080/realtimeproducts?page=1&limit=2&sort=title:asc,price:asc				http://localhost:8080/realtimeproducts
+	url web:	http://localhost:8080/products?page=1&limit=2&sort=title:asc,price:asc					http://localhost:8080/products	
+			http://localhost:8080/products?page=1&limit=2&sort=title:asc,price:asc&query=leche&type=category
+			http://localhost:8080/realtimeproducts?page=1&limit=2&sort=title:asc,price:asc&query=leche&type=category
 
 
 [x] El método GET deberá devolver un objeto con el siguiente formato:	
@@ -77,22 +79,23 @@ Con base en nuestra implementación actual de productos, modificar el método GET 
 
 						  
 Además, agregar al router de carts los siguientes endpoints:
-route	 Metodo	Path			urlPosman											Body
-products Get	/			http://localhost:8080/api/products
-products Get	/:id			http://localhost:8080/api/products/66d1391183af7911ef043b1f
-products Post	/			http://localhost:8080/api/products								{"title":"Te en Hebras Premium 100g", "description":"Te en hebras", "code":"TEPR008", "price":19000, "stock": 7, "category": "Infusion"}
-products Put	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6					{"title":"Te en Hebras 100g", "description":"Te en hebras en bolsa", "price":25000 }
-products Delete	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6
-carts	 Get	/			http://localhost:8080/api/carts/
-carts	 Get	/:id			http://localhost:8080/api/carts/66d1ed84136c0cf34a0b159d
-carts	 Post	/			http://localhost:8080/api/carts/				
-carts	 Post	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
-carts	 Delete	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
-carts	 Put	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c					[ { "product": "66d138df83af7911ef043b1c", "quantity": 3 }, { "product": "66d1392283af7911ef043b20", "quantity": 7 } ]
-carts	 Put	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d1392283af7911ef043b20	{
+Comprobar rutas y endpoints
+sta route	 Metodo	Path			urlPosman											Body
+[x] products Get	/			http://localhost:8080/api/products
+[x] products Get	/:id			http://localhost:8080/api/products/66d1391183af7911ef043b1f
+[x] products Post	/			http://localhost:8080/api/products								{"title":"Te en Hebras Premium 100g", "description":"Te en hebras", "code":"TEPR008", "price":19000, "stock": 7, "category": "Infusion"}
+[x] products Put	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6					{"title":"Te en Hebras 100g", "description":"Te en hebras en bolsa", "price":25000 }
+[x] products Delete	/:id			http://localhost:8080/api/products/66e3927f85580a5bdfe45ee6
+[x] carts	 Get	/			http://localhost:8080/api/carts/
+[x] carts	 Get	/:id			http://localhost:8080/api/carts/66d1ed84136c0cf34a0b159d
+[x] carts	 Post	/			http://localhost:8080/api/carts/				
+[x] carts	 Post	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
+[x] carts	 Delete	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d138b583af7911ef043b19
+[x] carts	 Put	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c					[ { "product": "66d138df83af7911ef043b1c", "quantity": 3 }, { "product": "66d1392283af7911ef043b20", "quantity": 7 } ]
+[x] carts	 Put	/:cid/product/:pid	http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c/product/66d1392283af7911ef043b20	{
  "quantity": 5 
 }
-carts	 Delete	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c
+[x] carts	 Delete	/:cid			http://localhost:8080/api/carts/66e396b6a7a751b4c41ca76c
 
 
 [x] DELETE "api/carts/:cid/products/:pid" deberá eliminar del carrito el producto seleccionado.

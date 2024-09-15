@@ -16,8 +16,6 @@ function formatCurrentDate() {
 let addstatus = true;
 let divHora = document.getElementById("hhmm");
 
-
-
 const inputTitle = document.getElementById("title");
 const inputDescrip = document.getElementById("description");
 const inputCode = document.getElementById("code");
@@ -27,138 +25,6 @@ const inputCateg = document.getElementById("category");
 const btnSubmit = document.getElementById("btnSubmit");
 const productListDiv = document.getElementById("product-list");
 
-const getProducts = async () => {
-
-    let res = await fetch(`/api/products`);
-    //let res = await fetch(`/realtimeproducts`);
-    let data = await res.json();
-    console.log("\r\nentro realtimeproducts.js");
-    console.log(`Se encontraron ${data.products.docs.length} productos.`);
-    console.log(data);
-
-
-    console.log(data.products.totalPages);
-
-    let otpg = Number(data.products.totalPages);
-    console.log(otpg);
-
-    const paginateDiv = document.getElementById('paginate');
-
-    if (!data.products.hasPrevPage) {
-        const FirstPage = document.createElement("a");
-        FirstPage.textContent = `[1] `;
-        FirstPage.className = "paginacionfirst";
-        FirstPage.href = `/api/realtimeproducts?page=1`;
-        paginateDiv.appendChild(FirstPage);
-
-        if (data.products.nextPage) {
-            const NextPage = document.createElement("a");
-            NextPage.textContent = `[${data.products.nextPage}] `;
-            NextPage.className = "paginacion";
-            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
-            paginateDiv.appendChild(NextPage);
-        } else {
-
-        }
-
-        if (data.products.totalPages) {
-            const LastPage = document.createElement("a");
-            LastPage.textContent = `[${data.products.totalPages}] `;
-            LastPage.className = "paginacion";
-            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
-            paginateDiv.appendChild(LastPage);
-        }
-
-    } else {
-
-        let prevpg = Number(data.products.totalPages) - 1;
-        const PrevPage = document.createElement("a");
-        PrevPage.textContent = `[${prevpg}] `;
-        PrevPage.className = "paginacionprev";
-        PrevPage.href = `/api/realtimeproducts?page=1`;
-        paginateDiv.appendChild(PrevPage);
-    }
-
-
-
-
-
-
-
-    if (!data.products.hasPrevPage) {
-        if (otpg < 4) {
-            const FirstPage = document.createElement("a");
-            FirstPage.textContent = ` [1] `;
-            FirstPage.className = "paginacion";
-            FirstPage.href = `/api/realtimeproducts?page=1`;
-            document.body.append(FirstPage);
-
-            const NextPage = document.createElement("a");
-            NextPage.textContent = ` [${data.products.nextPage}] `;
-            NextPage.className = "paginacion";
-            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
-            document.body.append(NextPage);
-
-            const LastPage = document.createElement("a");
-            LastPage.textContent = ` [${data.products.totalPages}] `;
-            LastPage.className = "paginacion";
-            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
-            document.body.append(LastPage);
-        }
-        else {
-            const FirstPage = document.createElement("a");
-            FirstPage.textContent = ` [1] `;
-            FirstPage.className = "paginacion";
-            FirstPage.href = `/api/realtimeproducts?page=1`;
-            document.body.append(FirstPage);
-
-            const NextPage = document.createElement("a");
-            NextPage.textContent = ` [${data.products.nextPage}] `;
-            NextPage.className = "paginacion";
-            NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
-            document.body.append(NextPage);
-
-            otpg = Number(data.products.nextPage) + 1;
-            console.log(otpg);
-
-            const OtNextPage = document.createElement("a");
-            OtNextPage.textContent = ` [${otpg}] `;
-            OtNextPage.className = "paginacion";
-            OtNextPage.href = `/api/realtimeproducts?page=${otpg}`;
-            document.body.append(OtNextPage);
-
-            const LastPage = document.createElement("a");
-            LastPage.textContent = ` [${data.products.totalPages}] `;
-            LastPage.className = "paginacion";
-            LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
-            document.body.append(LastPage);
-        }
-    } else {
-        const FirstPage = document.createElement("a");
-        FirstPage.textContent = ` [1] `;
-        FirstPage.className = "paginacion";
-        FirstPage.href = `/api/realtimeproducts?page=1`;
-        document.body.append(FirstPage);
-
-        const NextPage = document.createElement("a");
-        NextPage.textContent = ` [${data.products.nextPage}] `;
-        NextPage.className = "paginacion";
-        NextPage.href = `/api/realtimeproducts?page=${data.products.nextPage}`;
-        document.body.append(NextPage);
-
-        const LastPage = document.createElement("a");
-        LastPage.textContent = ` [${data.products.totalPages}] `;
-        LastPage.className = "paginacion";
-        LastPage.href = `/api/realtimeproducts?page=${data.products.totalPages}`;
-        document.body.append(LastPage);
-    }
-
-
-
-
-}
-
-//getProducts();
 
 btnSubmit.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -185,8 +51,6 @@ btnSubmit.addEventListener("click", async (e) => {
             return;
         }
 
-
-
         try {
             const response = await fetch(`/api/products`, {
                 method: 'POST',
@@ -194,34 +58,15 @@ btnSubmit.addEventListener("click", async (e) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(product)
-            })
-                /*
-                    .then(response => {
-                        response.json()
-                    })
-                    .then(data => {
-                        alert('Producto agregado correctamente.');
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Ocurrio un error al intentar agregar un producto.');
-                    })
-                    */
-                ;
-
-
+            });
 
             const data = await response.json();
-
-            console.log(data);
 
             if (response.ok) {
                 alert('Producto agregado correctamente.');
             } else {
                 alert(`Error: ${data.error}`);
             }
-
-
 
         } catch (error) {
             console.error('Error:', error);
@@ -259,7 +104,7 @@ function ModifyProduct(_id, title, description, code, price, stock, category) {
 
             event.preventDefault();
             const updatedProductId = {
-                //id: parseInt(document.getElementById('productId').value, 10)                
+                               
             };
             const updatedProduct = {
                 title: document.getElementById('title').value,
@@ -268,10 +113,7 @@ function ModifyProduct(_id, title, description, code, price, stock, category) {
                 price: parseFloat(document.getElementById('price').value),
                 stock: parseInt(document.getElementById('stock').value, 10),
                 category: document.getElementById('category').value
-            };
-
-            console.log(price);
-            console.log(stock);
+            };            
 
             if (isNaN(updatedProduct.price) || isNaN(updatedProduct.stock) || typeof updatedProduct.price == null || typeof updatedProduct.stock == null) {
                 alert('Los campos precio y stock deben ser numericos.');
@@ -365,19 +207,13 @@ function agregarProductoAlDOM(product) {
 
     const newItem = document.createElement('div');
     newItem.className = 'divCardItem';
-    //newItem.style.display = 'flex';
-    //newItem.style.justifyContent = 'center';
-    //newItem.style.alignItems = 'center';
     newItem.dataset.id = product._id;
-
-    console.log("RT JS addtoDOM:", product)
 
     let disp = product.status ? "Si" : "No";
 
     let img = "";
     let alt = "";
     let pid = product._id;
-    console.log("_id es: ", pid);
 
     if (product.thumbnails > 0) {
         alt = product.title;
@@ -413,7 +249,6 @@ function agregarProductoAlDOM(product) {
 
 
 socket.on("ProductoActualizado", Prodactuald => {
-    //console.log("Evento *ProductoActualizado* recibido", Prodactuald);
     actualizarProductoEnDOM(Prodactuald);
 });
 
@@ -421,7 +256,6 @@ function actualizarProductoEnDOM(product) {
     const productElement = document.querySelector(`[data-id="${product._id}"]`);
 
     if (productElement) {
-        //console.log("Producto encontrado en DOM, actualizando...");
         productElement.querySelector('.ItemData p').innerText = product.category;
         productElement.querySelector('.ItemData h3').innerText = `${product.title} - ${product.code}`;
         productElement.querySelector('.ItemDataPrice').innerText = `Price: $ ${product.price}`;
@@ -435,7 +269,6 @@ function actualizarProductoEnDOM(product) {
     }
 }
 
-
 socket.on("ProductoBorrado", Prodborrado => {
     eliminarProductoDelDOM(Prodborrado);
 });
@@ -448,7 +281,7 @@ function eliminarProductoDelDOM(productId) {
     }
 }
 
-// Función para agregar producto al carrito
+// Funcion para agregar producto al carrito
 async function AddProducttoCart(productId) {
 
     let cartId = localStorage.getItem("IdCart");
@@ -506,12 +339,10 @@ async function AddProducttoCart(productId) {
 
     try {
         const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
-            //method: 'PUT',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            //body: JSON.stringify({ quantity })
         });
 
         if (response.ok) {
@@ -538,7 +369,7 @@ async function AddProducttoCart(productId) {
     }
 }
 
-// Función para ver el carrito
+// Funcion para ver el carrito
 function ViewCart() {
     let cartId = localStorage.getItem("IdCart");
 
@@ -551,17 +382,18 @@ function ViewCart() {
         return;
     }
 
-    // Redirigir a la página del carrito
+    // Redirigir a la pagina del carrito
     window.location.href = `/carts/${cartId}`;
 }
 
-// Función para ver el carrito
+// Funcion para ver el carrito
 function ViewProduct(pid) {
 
-    // Redirigir a la página del carrito
+    // Redirigir a la pagina del carrito
     window.location.href = `/products/${pid}`;
 }
 
+// Funcion para validar MongoDB id, usando expresion regular
 function isValidObjectId(id) {
     return /^[a-f\d]{24}$/i.test(id);
 }

@@ -48,7 +48,7 @@
         </div>
         {{/each}}
     </div>
-    
+
 
     <hr>
 
@@ -77,26 +77,24 @@
         </form>
     </div>
 </div>
-    <div class="paginate" id="paginate">
-        {{#if dataObject.hasPrevPage}}
-        <a href="http://localhost:8080{{dataObject.prevLink}}" class="pagPrev">{{dataObject.prevPage}}</a>
-        {{else}}
-        {{/if}}
+<div class="paginate" id="paginate">
+    {{#if dataObject.hasPrevPage}}
+    <a href="http://localhost:8080{{dataObject.prevLink}}" class="pagPrev">{{dataObject.prevPage}}</a>
+    {{else}}
+    {{/if}}
 
-        <p class="pagCurrent">{{dataObject.page}}</p>
-        <!-- <a href="http://localhost:8080{{dataObject.pageLink}}" class="pagCurrent">{{dataObject.page}}</a> -->
+    <p class="pagCurrent">{{dataObject.page}}</p>
 
-        {{#if dataObject.hasNextPage}}
-        <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
-        {{else}}
-        {{/if}}
+    {{#if dataObject.hasNextPage}}
+    <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
+    {{else}}
+    {{/if}}
 
-        {{#if dataObject.hasLastPage}}
-        <a href="http://localhost:8080/realtimeproducts?page={{dataObject.totalPages}}"
-            class="pagLast">{{dataObject.totalPages}}</a>
-        {{else}}
-        {{/if}}
-    </div>
+    {{#if dataObject.hasLastPage}}
+    <a href="http://localhost:8080{{dataObject.lastLink}}" class="pagLast">{{dataObject.totalPages}}</a>
+    {{else}}
+    {{/if}}
+</div>
 
 
 

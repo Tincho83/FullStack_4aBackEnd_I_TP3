@@ -1,10 +1,10 @@
+// Funcion para volver a la pagina de vista de products
 function BackToProducts() {
     window.location.href = "/products";
 }
 
-
+// Funcion para borrar un producto del carrito
 async function DeleteProduct(productId, cartId) {
-    console.log(`delete api/carts/${cartId}/product/${productId}`);
     const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
         method: 'DELETE',
         headers: {
@@ -13,13 +13,10 @@ async function DeleteProduct(productId, cartId) {
     })
         .then(response => {
             if (response.ok) {
-
-                console.log("delete prod de la pagina");
-                // Eliminar el producto de la interfaz de usuario
+                // Eliminar producto del DOM
                 document.querySelector(`[data-id="${productId}"]`).remove();
 
-                console.log("actualizar subtotal");
-                // Opcional: Actualizar el subtotal
+                // Actualizar el subtotal
                 updateSubtotal();
             } else {
                 console.error('Error al eliminar el producto');
@@ -28,7 +25,7 @@ async function DeleteProduct(productId, cartId) {
         .catch(error => console.error('Error:', error));
 }
 
-
+// Funcion para recalcular subtotal
 function updateSubtotal() {
     let subtotal = 0;
     document.querySelectorAll('.divCardItem').forEach(item => {
@@ -39,9 +36,7 @@ function updateSubtotal() {
     document.querySelector('.ItemDataSubtotal').textContent = `Subtotal: $ ${subtotal}`;
 }
 
-// Función para ver el carrito
-function ViewProduct(pid) {
-
-    // Redirigir a la página del carrito
+// Funcion para ver el detalle del producto
+function ViewProduct(pid) {    
     window.location.href = `/products/${pid}`;
 }

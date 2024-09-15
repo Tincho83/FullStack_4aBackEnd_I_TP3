@@ -1,23 +1,18 @@
 const { mongoose } = require("mongoose");
 const { config } = require("../../config/config");
-const paginate = require("mongoose-paginate-v2");
+//const paginate = require("mongoose-paginate-v2");
 
+// coleccion de carts
 const cartsColl = config.MONGO_COLLCARTNAME;
 
+// esquema para carts
 const cartsSchema = new mongoose.Schema(
     {
-        //id: { type: Number, unique: true, required: true },
-        //products: { type: Array, required: false },
-        //products: [{
-        //    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
-        //    quantity: { type: Number, default: 1 }
-        //}]
         products: {
             type: [
                 {
                     product: {
                         type: mongoose.Schema.Types.ObjectId, ref: "products"
-                        //agregar config para MONGO_COLLPRODNAME
                     },
                     quantity: { type: Number, default: 1 }
                 }

@@ -80,8 +80,7 @@
     {{else}}
     {{/if}}
 
-    <p class="pagCurrent">{{dataObject.page}}</p>
-    <!-- <a href="http://localhost:8080{{dataObject.pageLink}}" class="pagCurrent">{{dataObject.page}}</a> -->
+    <p class="pagCurrent">{{dataObject.page}}</p>    
 
     {{#if dataObject.hasNextPage}}
     <a href="http://localhost:8080{{dataObject.nextLink}}" class="pagNext">{{dataObject.nextPage}}</a>
@@ -89,7 +88,7 @@
     {{/if}}
 
     {{#if dataObject.hasLastPage}}
-    <a href="http://localhost:8080/products?page={{dataObject.totalPages}}"
+    <a href="http://localhost:8080{{dataObject.lastLink}}"
         class="pagLast">{{dataObject.totalPages}}</a>
     {{else}}
     {{/if}}
